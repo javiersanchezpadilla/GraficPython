@@ -1,0 +1,19 @@
+El rango de coordenadas que va de -1 a 1 se conoce como Coordenadas de Dispositivo Normalizadas 
+(Normalized Device Coordinates o NDC). Piénsalo así: OpenGL no sabe de píxeles ni de resoluciones 
+de pantalla. Le da igual si tu ventana es de 800x600 o de 1920x1080. Por eso, usa un sistema de 
+coordenadas "virtual" que siempre tiene el mismo tamaño.
+
+El centro de la pantalla es siempre (0.0, 0.0).
+
+La esquina superior derecha es siempre (1.0, 1.0).
+
+La esquina inferior izquierda es siempre (-1.0, -1.0).
+
+¿Por qué se usa este sistema?
+La principal ventaja es que hace que tu código sea mucho más portable. Si escribes un programa para 
+dibujar un triángulo en el centro de la pantalla usando coordenadas NDC (Coordenadas del dispositivo normalizdo), 
+ese mismo código funcionará perfectamente en cualquier ordenador, con cualquier tamaño de ventana, y el 
+triángulo siempre aparecerá en el centro.
+
+Después de que tú le das a OpenGL las coordenadas NDC, él se encarga de traducirlas a los píxeles reales de tu 
+pantalla, un proceso que se llama "Viewport Transform".

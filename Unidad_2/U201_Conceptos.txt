@@ -1,0 +1,16 @@
+¿Qué es OpenGL y cómo funciona?
+
+Imagina que quieres dibujar un paisaje en un papel. Usarías lápices, rotuladores, acuarelas... 
+OpenGL es como una caja de herramientas de dibujo super potente para tu ordenador. 
+En lugar de usar lápices, tú le das instrucciones al ordenador con código para que dibuje en 
+la pantalla, que sería tu papel.
+
+Lo más genial de OpenGL es que no le dice al ordenador "dibuja un árbol". En su lugar, le dice 
+"dibuja un montón de triángulos verdes que formen un árbol", "dibuja una línea marrón para el 
+tronco" y "pinta un círculo amarillo para el sol". Es como si fueras un director de cine que 
+le dice a los actores exactamente dónde moverse y qué hacer para crear una escena.
+
+Un dato curioso: OpenGL no es un programa que instalas, sino una especificación. Piensa en ello 
+como si fuera el manual de instrucciones. Cada fabricante de tarjetas gráficas (como NVIDIA o AMD) 
+sigue este manual para construir sus herramientas de dibujo. ¡Por eso OpenGL funciona en casi todos 
+los ordenadores del mundo!

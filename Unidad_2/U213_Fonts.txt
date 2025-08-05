@@ -1,0 +1,64 @@
+OpenGL no tiene una función mágica llamada glDrawText(). En cambio, el texto se maneja como si fuera un dibujo más, 
+pero de una manera muy inteligente.
+
+La forma estándar de hacerlo es tratar cada letra, número o símbolo (llamados glifos) como si fuera una imagen, y 
+luego dibujar esas imágenes en la pantalla. Imagina que tienes una sola imagen muy grande que contiene todas las 
+letras del alfabeto, una al lado de la otra. Esto se llama un atlas de texturas.
+
+Para dibujar una palabra como "HOLA", harías lo siguiente:
+
+Dibujar un pequeño cuadrado (un quad) donde quieres que vaya la letra 'H'.
+Le dices a OpenGL que "pegue" la imagen de la 'H' del atlas de texturas en ese cuadrado.
+Repites el proceso para la 'O', la 'L' y la 'A', moviendo cada cuadrado un poco más hacia la derecha.
+
+Hacer esto manualmente es mucho trabajo. Por suerte, hay bibliotecas que se encargan de todos estos pasos por nosotros, 
+como FreeType, que es muy popular y tiene wrappers en Python para facilitar su uso.
+
+
+Plan de Aprendizaje: Fuentes de texto en OpenGL
+
+A) Entendiendo el texto como texturas: Veremos el concepto del atlas de texturas y cómo OpenGL ve las letras como imágenes.
+B) Dibujando un solo carácter: Practicaremos a dibujar un solo glifo en la pantalla, el primer paso para crear cualquier texto.
+C) Mostrando una cadena de texto: Finalmente, juntaremos todo para dibujar palabras y frases completas.
+
+
+ENTENDIENTE EL TEXTO COMO TEXTURAS.
+
+OpenGL no tiene una función para dibujar texto directamente. Para que el ordenador entienda cómo dibujar una letra, la convertimos 
+en una imagen. Imagina que tienes una hoja de papel (nuestro atlas de texturas) donde has dibujado cuidadosamente todas las letras 
+del alfabeto, los números y los símbolos que necesitas, como si fuera una plantilla.
+
+Cuando quieres escribir una palabra, digamos "HOLA", le dices a OpenGL:
+
+"Dibuja un pequeño cuadrado aquí para la 'H'."
+"Ahora, toma la parte de la plantilla donde está la 'H' y pégala en ese cuadrado."
+"Luego, dibuja otro cuadrado al lado para la 'O'."
+"Y pega la 'O' de la plantilla en ese nuevo cuadrado."
+Repites el proceso con la 'L' y la 'A'.
+
+De esta manera, el ordenador solo tiene que dibujar unos cuantos cuadrados y "pegar" las imágenes correctas en ellos. Es una forma 
+muy eficiente de mostrar texto sin tener que calcular la forma de cada letra.
+
+Para que esto funcione, necesitamos tres cosas:
+
+1) Un atlas de texturas (la imagen con todas las letras).
+2) Las coordenadas de la parte del atlas que corresponde a cada letra.
+3) Y el código para dibujar esos cuadrados y pegar las texturas.
+
+0,3	    1,3	    2,3	    3,3
+A	    B	    C	    D
+0,2	    1,2	    2,2	    3,2
+E	    F	    G	    H
+0,1	    1,1	    2,1	    3,1
+I	    J	    K	    L
+0,0	    1,0	    2,0	    3,0
+M	    N	    O	    P
+
+Las coordenadas (0,0) están en la esquina inferior izquierda.
+Si quisieras dibujar la palabra "HOLA" en tu pantalla, ¿cuáles serían las coordenadas del atlas de texturas que necesitarías 
+para cada letra?
+
+H: (3, 2)
+O: (2, 0)
+L: (3, 1)
+A: (0, 3)

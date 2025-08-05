@@ -1,0 +1,21 @@
+¿Qué son los fractales?
+
+Imagina que tienes una brócoli. Si tomas un pedacito de la brócoli, verás que ese pedacito tiene una forma 
+muy parecida a la brócoli entera. Si tomas un pedacito de ese pedacito, verás que es igual. Esto es exactamente 
+la idea de un fractal: son formas que se repiten a sí mismas en diferentes escalas.
+
+En términos más elegantes, un fractal es una figura geométrica que se puede dividir en partes, donde cada parte 
+es una copia (aproximada) de la figura original, pero más pequeña. Esta propiedad se llama autosimilitud.
+
+La mejor parte de los fractales es que, a pesar de su complejidad visual, se pueden generar con reglas muy simples 
+y repetitivas. Esto es lo que los hace perfectos para programar, ¡porque a los ordenadores les encanta repetir tareas!
+
+Hay dos maneras principales de generar fractales en programación:
+
+Fractales de Sistemas de Funciones Iteradas (IFS): Son aquellos que se construyen repitiendo una transformación 
+geométrica (como escalar y rotar) en una figura inicial. Un ejemplo clásico es el Triángulo de Sierpinski.
+
+Fractales de Escape-Time (Conjunto de Mandelbrot): Son aquellos que se crean evaluando una fórmula matemática para 
+cada punto en la pantalla y coloreando el punto basándose en el resultado de esa fórmula.
+
+Para empezar, vamos a centrarnos en los fractales IFS, ya que utilizan las transformaciones que acabamos de aprender.

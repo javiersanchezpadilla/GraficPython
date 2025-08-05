@@ -1,0 +1,27 @@
+Coordenadas en 3D: Un nuevo mundo
+
+Hasta ahora, hemos trabajado en un plano 2D, con coordenadas (x, y) que representan la posición 
+en una pantalla plana. Para pasar a 3D, solo necesitamos añadir una coordenada más: la z.
+
+Piensa en las coordenadas (x, y) como la ubicación de un objeto en una mesa. La coordenada z sería 
+la altura del objeto por encima de la mesa. En OpenGL, la coordenada z controla la profundidad:
+
+*** Valores z positivos generalmente significan que el objeto está más cerca de ti.
+*** Valores z negativos significan que el objeto está más lejos de ti.
+
+Para que esto funcione, necesitamos decirle a OpenGL que vamos a trabajar en 3D. Esto se logra con 
+tres conceptos clave:
+
+1) Matriz de Proyección (la "Cámara"): En 2D, veíamos todo plano. En 3D, necesitamos una "cámara" para 
+   crear la ilusión de profundidad. La matriz de proyección hace esto: simula cómo un objeto lejano 
+   parece más pequeño que uno cercano, tal como en la vida real.
+
+2) Matriz del Modelo-Vista (la "Posición de los Objetos"): Esta matriz combina la posición de tu cámara 
+   con la posición de los objetos en el mundo. Con ella, movemos, rotamos y escalamos nuestros objetos 
+   en el espacio 3D.
+
+3) Habilitar la profundidad: Para que OpenGL sepa qué objeto está "delante" de otro, necesitamos habilitar 
+   el "Z-Buffer" o "Buffer de Profundidad". Esto asegura que las partes de los objetos que están más lejos 
+   queden ocultas por las que están más cerca.
+
+No te preocupes si estos conceptos suenan complicados. Son el equivalente a lo que ya hicimos en 2D, pero con una nueva dimensión.
