@@ -74,7 +74,26 @@ def main():
     glEnable(GL_DEPTH_TEST)
     glClearColor(0.0, 0.0, 0.0, 1.0)
     glMatrixMode(GL_PROJECTION)
+
+    # gluPerspective(45, (800/600), 0.1, 50.0): La lente de la cámara
+    # Este comando es el que realmente configura esa lente. Le dice a 
+    # OpenGL qué tipo de vista quieres:
+
+    # 45  El ángulo de visión (Field of View o FOV). Un ángulo de 45 grados 
+    #     es un valor común, similar a lo que el ojo humano ve. Un ángulo más 
+    #     grande sería como usar una lente de gran angular, y uno más pequeño 
+    #     como un zoom.
+
+    # (800/600)  La relación de aspecto de la ventana. Esto asegura que el 
+    #            mundo 3D no se vea estirado o comprimido.
+
+    # 0.1 y 50.0  Los planos de recorte. OpenGL solo dibujará los objetos que 
+    #             estén entre 0.1 y 50.0 unidades de distancia 
+    # de la cámara. Todo lo que esté fuera de ese rango no se mostrará.
+
     gluPerspective(45, (800/600), 0.1, 50.0)
+
+
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
     
