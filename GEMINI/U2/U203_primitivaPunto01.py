@@ -1,0 +1,50 @@
+""" Esta función inicializa una ventana OpenGL usando GLFW.
+    La estemos utilizando para dibujar primitivas en OpenGL.
+    
+    Las coordenadas están normalizadas: X e Y van de -1 a 1.
+    El punto rojo aparecerá en el centro de la ventana.
+    
+    Concepto	                Descripción
+    glBegin(...)	    Inicia el dibujo de una primitiva
+    glVertex2f(x,y)	    Establece una coordenada 2D
+    glColor3f(r,g,b)	Establece el color (valores entre 0 y 1)
+    glEnd()	            Finaliza la primitiva
+
+    Coordenadas	De -1 a 1 tanto en X como Y
+    """
+
+import glfw
+from OpenGL.GL import *
+
+def iniciar_ventana():
+    if not glfw.init():
+        raise Exception("No se pudo iniciar GLFW")
+
+    ventana = glfw.create_window(800, 600, "Primitivas en OpenGL", None, None)
+    if not ventana:
+        glfw.terminate()
+        raise Exception("No se pudo crear la ventana")
+
+    glfw.make_context_current(ventana)
+    return ventana
+
+def dibuja_punto():
+    glClear(GL_COLOR_BUFFER_BIT)
+    glClearColor(0, 0, 0, 1)  # Fondo negro
+
+    # glPointSize(10)  # Tamaño del punto
+    glBegin(GL_POINTS)
+    glColor3f(1, 0, 0)  # Color rojo
+    glVertex2f(0.0, 0.0)  # Coordenada central (0,0)
+    glEnd()
+
+
+# Aquí pondremos el código para dibujar primitivas
+ventana = iniciar_ventana()
+while not glfw.window_should_close(ventana):
+    dibuja_punto()
+    glfw.swap_buffers(ventana)
+    glfw.poll_events()
+
+glfw.terminate()
+
