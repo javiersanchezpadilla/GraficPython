@@ -87,6 +87,7 @@ def dibujar_circulo(radio, r, g, b):
     for ang in range(0, 361, 10):
         ang_rad = math.radians(ang)
         glVertex2f(math.cos(ang_rad) * radio, math.sin(ang_rad) * radio)
+        print(f"Ángulo: {ang}° → Coordenada: ({math.cos(ang_rad) * radio:.2f}, {math.sin(ang_rad) * radio:.2f})")
     glEnd()
 
 
@@ -99,7 +100,7 @@ while not glfw.window_should_close(ventana):
     glLoadIdentity()
 
     tiempo = glfw.get_time()
-    print(f"Tiempo: {tiempo:.2f} segundos. POR 30 = {tiempo * 30:.2f} grados de órbita. POR 100 = {tiempo * 100:.2f} grados de rotación propia.")
+    # print(f"Tiempo: {tiempo:.2f} segundos. POR 30 = {tiempo * 30:.2f} grados de órbita. POR 100 = {tiempo * 100:.2f} grados de rotación propia.")
 
     # ☀️ Sol en el centro
     glPushMatrix()
