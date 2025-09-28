@@ -11,12 +11,12 @@
 
     El "bucle principal": Esto es el corazón de nuestro programa. Es un ciclo while infinito que se encarga de:
 
-    Revisar si el usuario quiere cerrar la ventana.
-    Dibujar en la ventana (esto lo veremos en un momento).
-    Mostrar lo que hemos dibujado en la pantalla.
+        Revisar si el usuario quiere cerrar la ventana.
+        Dibujar en la ventana.
+        Mostrar lo que hemos dibujado en la pantalla.
 """
 
-
+# Importamos las librerías necesarias
 import glfw
 from OpenGL.GL import *
 
@@ -29,9 +29,9 @@ window = glfw.create_window(800, 600, "Mi primera ventana en OpenGL", None, None
 
 if not window:
     glfw.terminate()
-    raise Exception("La ventana glfw no puede ser creada!")
+    raise Exception("La ventana GLFW no puede ser creada!")
 
-# Hacer el contexto de la ventana actual
+# Crear el contexto de la ventana actual
 glfw.make_context_current(window)
 
 # 3. El bucle principal
@@ -53,8 +53,19 @@ while not glfw.window_should_close(window):
     # glClearColor(rojo, verde, azul, alfa)
     # Esta función le dice a OpenGL qué color usar para limpiar. Los valores de 
     # rojo, verde, azul y alfa (transparencia) van de 0.0 a 1.0. Por ejemplo, 
+
     # glClearColor(1.0, 0.0, 0.0, 1.0) establecería el color de limpieza en un rojo sólido. 
+    # glClearColor(0.0, 1.0, 0.0, 1.0) Verde sólido
+    # glClearColor(0.0, 0.0, 1.0, 1.0) Azul sólido
+    # glClearColor(1.0, 1.0, 1.0, 1.0) Blanco sólido
+    # glClearColor(1.0, 1.0, 0.0, 1.0) Amarillo sólido
+    # glClearColor(0.0, 1.0, 1.0, 1.0) Cian sólido
+    # glClearColor(1.0, 0.0, 1.0, 1.0) Magenta sólido
+    # glClearColor(0.0, 0.0, 0.0, 1,0) Negro sólido   
     # Si no la defines, por defecto se usa un color negro.
+
+    glClearColor(1.0, 1.0, 1.0, 1.0)
+
     glClear(GL_COLOR_BUFFER_BIT)
 
     # 4. Refresca la pantalla para mostrar lo que hemos dibujado

@@ -1,19 +1,21 @@
 """ Esta función inicializa una ventana OpenGL usando GLFW.
-    La estemos utilizando para dibujar primitivas en OpenGL."""
+    El objetivo es organizar la inicializacion de la ventana 
+    a travez de una funcion que se encargará solo de eso (inicializar)
+    """
 
+# Importamos las librerias
 import glfw
 from OpenGL.GL import *
 
 def iniciar_ventana():
     """
-    The function `iniciar_ventana` initializes a GLFW window with specified dimensions and title in
-    Python.
-    :return: The function `iniciar_ventana` is returning the GLFW window object `ventana`.
+    La funcion `iniciar_ventana` inicializa una ventana GLFW con dimensiones especificas y titulo 
+    :return: La funcion `iniciar_ventana` retorna la ventana GLFW como un objeto del tipo 'ventana'.
     """
     if not glfw.init():
         raise Exception("No se pudo iniciar GLFW")
 
-    ventana = glfw.create_window(800, 600, "Primitivas en OpenGL", None, None)
+    ventana = glfw.create_window(800, 600, "Mi primera ventana como funcion en OpenGL", None, None)
     if not ventana:
         glfw.terminate()
         raise Exception("No se pudo crear la ventana")
@@ -26,9 +28,12 @@ def iniciar_ventana():
 # **  Aquí pondremos el código para dibujar primitivas  **
 # ********************************************************
 
+# Asignamos a la variable ventana el valor retornado por la función iniciar_ventana
 ventana = iniciar_ventana()
-while not glfw.window_should_close(ventana):
 
+# El bucle principal
+while not glfw.window_should_close(ventana):
+    glClearColor(1.0, 1.0, 0.0, 1.0)
     glClear(GL_COLOR_BUFFER_BIT)
 
     # Aqui ponemos todo loque se desee
