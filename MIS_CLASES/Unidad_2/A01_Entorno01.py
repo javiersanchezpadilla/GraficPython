@@ -20,11 +20,25 @@
 import glfw
 from OpenGL.GL import *
 
-# 1. Inicializar GLFW
+# 1. Inicializar        GLFW GLFW.INIT()
+# Lógica: Esta es la primera llamada que debes hacer. Le dice al sistema operativo y al driver de la tarjeta 
+# gráfica: "Prepárate, que voy a empezar una aplicación de gráficos."
+# Propósito: La función inicializa la biblioteca GLFW y todos sus sistemas internos. Esto incluye configurar 
+# las partes de la biblioteca que gestionarán la entrada del usuario (teclado, ratón) y la comunicación con 
+# el sistema operativo para crear la ventana. Si esta llamada falla, el resto del programa no puede ejecutarse.
+
 if not glfw.init():
     raise Exception("glfw no puede ser inicializado!")
 
 # 2. Crear una ventana de 800x600 píxeles
+# Lógica: Esta línea le pide al sistema operativo que reserve un espacio visual en la pantalla (la ventana) y, 
+# al mismo tiempo, le pide a OpenGL que cree un contexto de renderizado.
+
+# Propósito: 
+# Ventana: Crea el contenedor visible de 800 píxeles de ancho por 600 píxeles de alto, con el título especificado.
+# Contexto de OpenGL: Este es el punto más importante. El contexto de OpenGL es un área de memoria donde se 
+# guardan todos los estados de OpenGL (el color actual, la matriz de proyección, las texturas cargadas, etc.). 
+# Esencialmente, es el "lienzo" donde OpenGL dibuja.
 window = glfw.create_window(800, 600, "Mi primera ventana en OpenGL", None, None)
 
 if not window:
@@ -32,9 +46,17 @@ if not window:
     raise Exception("La ventana GLFW no puede ser creada!")
 
 # Crear el contexto de la ventana actual
+# Lógica: Le dice al hilo de ejecución actual del programa: "Usa el contexto de OpenGL asociado a esta ventana 
+# para todas tus futuras llamadas a funciones de OpenGL (glVertex, glBegin, glColor, etc.)."
+# Propósito: Activa el contexto creado en el paso 2. Una vez que esta línea se ejecuta, todas las funciones de 
+# OpenGL que llames a partir de ese momento (como configurar el color de fondo o dibujar un cuadrado) se aplicarán 
+# a esa ventana específica.
 glfw.make_context_current(window)
 
+
 # 3. El bucle principal
+# Una vez que estos tres pasos se completan con éxito, estás listo para comenzar tu bucle principal y dibujar 
+# tus gráficos.
 while not glfw.window_should_close(window):
     # Dibuja aquí (¡por ahora, solo limpiaremos el color!)
     # Piensa en la pantalla como si fuera un lienzo de dos caras. Mientras tú estás 
@@ -64,7 +86,7 @@ while not glfw.window_should_close(window):
     # glClearColor(0.0, 0.0, 0.0, 1,0) Negro sólido   
     # Si no la defines, por defecto se usa un color negro.
 
-    glClearColor(1.0, 1.0, 1.0, 1.0)
+    glClearColor(1.0, 1.0, 0.0, 1.0)
 
     glClear(GL_COLOR_BUFFER_BIT)
 

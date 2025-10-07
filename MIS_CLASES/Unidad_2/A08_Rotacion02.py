@@ -29,8 +29,12 @@
 
 import glfw
 from OpenGL.GL import *
-from math import cos, sin
+from math import cos, sin, pi
 
+
+radio = 0.6
+puntos_a_dibujar = 5
+punto_circulo = 1
 
 def iniciar_ventana():
     """
@@ -48,31 +52,32 @@ def iniciar_ventana():
 
 
 def rotar_punto():
-    glClearColor(0.0, 0.0, 0.0, 1.0)    # Limpia la pantalla
-    glClear(GL_COLOR_BUFFER_BIT)
+    """
+    La funcion `rotar_punto` rota un punto alrededor de un circulo y lo dibuja usando OpenGL.
+    """
+    
+    global punto_circulo
+    punto_circulo += 1
 
-    PI = 3.141592653589793
-    radio = 0.6
-    puntos_a_dibujar = 100
-    glColor3f(1.0, 1.0, 0.0)     # Color amarillo brillante
+    angulo = (punto_circulo / puntos_a_dibujar) * 2 * 3.141592653589793
+    # Ecuación paramétrica
+    x = radio * cos(angulo)
+    y = radio * sin(angulo)
+    glPointSize(3)          # Tamaño del punto
 
-    for i in range(puntos_a_dibujar + 1):
-        angulo = (i / puntos_a_dibujar) * 2 * PI
-        # Ecuación paramétrica
-        x = radio * cos(angulo)
-        y = radio * sin(angulo)
-
-        # Dibuja un punto en las coordenadas (x, y)
-        glBegin(GL_POINTS)
-        glVertex2f(x, y)
-        glEnd()
+    # Dibuja un punto en las coordenadas (x, y)
+    glBegin(GL_POINTS)
+    glVertex2f(x, y)
+    glEnd()
 
 
 if __name__ == "__main__":
     ventana = iniciar_ventana()
+    glClearColor(0.0, 0.0, 0.0, 1.0)    # Limpia la pantalla
+    glClear(GL_COLOR_BUFFER_BIT)    
     while not glfw.window_should_close(ventana):
-        
-
+        glClearColor(0.0, 0.0, 0.0, 1.0)    # Limpia la pantalla
+        glClear(GL_COLOR_BUFFER_BIT)    
         rotar_punto()         
         glfw.swap_buffers(ventana)
         glfw.poll_events()

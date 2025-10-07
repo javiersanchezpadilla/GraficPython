@@ -1,0 +1,115 @@
+
+SIGNIFICADO DE GLFW
+
+
+GLFW significa Graphics Library FrameWork.
+En español, se traduciría como Marco de Trabajo para Biblioteca de Gráficos.
+
+
+DESGLOSE DEL SIGNIFICADO.
+
+El nombre describe perfectamente su propósito en la programación de gráficos (como OpenGL):
+
+Graphics Library (Biblioteca de Gráficos): Esto hace referencia a su función principal de trabajar con 
+sistemas de renderizado como OpenGL, Vulkan o DirectX.
+
+Framework (Marco de Trabajo): Indica que no es el motor de gráficos en sí (ese es OpenGL), sino un conjunto 
+de herramientas y una estructura que te permite gestionar todo lo que rodea al motor: la creación de ventanas, 
+la gestión de entradas (teclado, ratón) y la sincronización.
+
+En esencia, el nombre subraya que es la capa de abstracción que necesitas para crear una aplicación 
+gráfica de escritorio que use una API de renderizado 3D. Te proporciona el "marco" de la aplicación, 
+mientras que tú te encargas de la "pintura" con OpenGL.
+
+
+LÓGICA DE OPERACIÓN EN EL USO DE GLFW
+
+1. Inicializar la Biblioteca        glfw.init()
+
+Lógica: Esta es la primera llamada que debes hacer. Le dice al sistema operativo y al driver de la tarjeta 
+gráfica: "Prepárate, que voy a empezar una aplicación de gráficos."
+Propósito: La función inicializa la biblioteca GLFW y todos sus sistemas internos. Esto incluye configurar 
+las partes de la biblioteca que gestionarán la entrada del usuario (teclado, ratón) y la comunicación con 
+el sistema operativo para crear la ventana. Si esta llamada falla, el resto del programa no puede ejecutarse.
+
+
+2. Crear la Ventana y el Contexto  window = glfw.create_window(800, 600, "Mi primera ventana en OpenGL", None, None)
+
+Lógica: Esta línea le pide al sistema operativo que reserve un espacio visual en la pantalla (la ventana) y, 
+al mismo tiempo, le pide a OpenGL que cree un contexto de renderizado.
+
+Propósito: 
+Ventana: Crea el contenedor visible de 800 píxeles de ancho por 600 píxeles de alto, con el título especificado.
+Contexto de OpenGL: Este es el punto más importante. El contexto de OpenGL es un área de memoria donde se 
+guardan todos los estados de OpenGL (el color actual, la matriz de proyección, las texturas cargadas, etc.). 
+Esencialmente, es el "lienzo" donde OpenGL dibuja.
+
+
+3. Activar el Contexto              glfw.make_context_current(window)
+Lógica: Le dice al hilo de ejecución actual del programa: "Usa el contexto de OpenGL asociado a esta ventana 
+para todas tus futuras llamadas a funciones de OpenGL (glVertex, glBegin, glColor, etc.)."
+Propósito: Activa el contexto creado en el paso 2. Una vez que esta línea se ejecuta, todas las funciones de 
+OpenGL que llames a partir de ese momento (como configurar el color de fondo o dibujar un cuadrado) se aplicarán 
+a esa ventana específica.
+
+Resumen del Flujo de Ejecución
+
+Paso	                Comando	                                    Propósito (Metáfora)
+1. Inicialización	    glfw.init()	                "Abro el estudio de arte" (Inicio el framework).
+2. Creación	            glfw.create_window()	    "Pongo el lienzo sobre el caballete" (Creo la ventana y el 
+                                                    contexto de dibujo).
+3. Activación	        glfw.make_context_current()	"Cojo mis pinceles y me pongo a trabajar en este lienzo" 
+                                                    (Hago el contexto activo para empezar a usar comandos de OpenGL).
+
+
+Una vez que estos tres pasos se completan con éxito, estás listo para comenzar tu bucle principal y dibujar 
+tus gráficos.
+
+
+
+PROPÓSITO DE        glfw.swap_buffers(window)
+
+La función glfw.swap_buffers(window) tiene como propósito principal mostrar el fotograma que acabas de dibujar. 
+Se relaciona directamente con la técnica de doble buffering, que es estándar en la programación de gráficos.
+El Problema: Si OpenGL dibujara directamente sobre la imagen que estás viendo, verías el proceso de dibujo 
+(líneas apareciendo, colores cambiando), lo que resultaría en un parpadeo desagradable o "rasgado" (tearing).
+
+La Solución (Doble Buffering):
+
+Mientras estás mirando el búfer frontal (la imagen actual en pantalla), OpenGL está dibujando el siguiente 
+fotograma en el búfer trasero (la memoria oculta).
+
+glfw.swap_buffers() le dice a la tarjeta gráfica que intercambie los roles de los búferes. El búfer trasero 
+(con el nuevo fotograma completo) se convierte en el frontal (visible), y el búfer frontal (con el fotograma 
+viejo) se convierte en el trasero, listo para que se dibuje el siguiente fotograma.
+
+En esencia, esta línea es la que dice: "Listo, ya terminé de dibujar este fotograma. Muéstralo en pantalla."
+
+
+
+PROPÓSITO DE        glfw.poll_events()
+
+La función glfw.poll_events() tiene el propósito de mantener la ventana reactiva y procesar la entrada del 
+usuario.
+
+Eventos: El sistema operativo (Windows, Linux, macOS) genera eventos cada vez que algo sucede en la ventana. 
+Estos incluyen:
+
+Una tecla ha sido presionada.
+El ratón se ha movido o ha hecho clic.
+La ventana se ha redimensionado.
+El usuario ha hecho clic en el botón de cerrar.
+
+Procesamiento: glfw.poll_events() le dice a GLFW que revise todos los eventos que se acumularon desde la última 
+vez que se llamó y los procese.
+
+Si no llamas a esta función de forma regular dentro de tu bucle, la ventana dejará de responder, no detectará 
+la entrada del teclado o ratón, y el sistema operativo podría marcar tu programa como "No responde".
+
+Resumen del Bucle
+La combinación de estas dos líneas y el código de dibujo forma el ciclo de vida de un juego o aplicación de 
+gráficos:
+
+Dibujar (Tú): Ejecutas comandos de OpenGL.
+Mostrar (swap_buffers): Enseñas el resultado en pantalla.
+Reaccionar (poll_events): Escuchas si el usuario hizo algo para prepararte para el siguiente fotograma.
