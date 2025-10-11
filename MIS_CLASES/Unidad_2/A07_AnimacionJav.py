@@ -20,7 +20,7 @@ MAX_TAMANIO = 50
 MAX_VELOCIDAD = 4
 RES_X = 800
 RES_Y = 600
-TOTAL_CUADROS = 15
+TOTAL_CUADROS = 5
 
 # --- Estructura de Datos (Clase en Python) ---
 class Cuadro:
@@ -34,7 +34,7 @@ class Cuadro:
     azul = 0.0
 
 # Inicializa la lista de objetos inicializa de 0 a TOTAL_CUADROS-1 (15-1 = 14)
-objeto = [Cuadro() for _ in range(TOTAL_CUADROS)]
+cuadrito = [Cuadro() for _ in range(TOTAL_CUADROS)]
 
 
 def Inicializa():
@@ -58,17 +58,17 @@ def CreaCuadros():
 
     for b in range(TOTAL_CUADROS):
         # Genera tamaño aleatorio
-        objeto[b].tamanio = random.randint(1, MAX_TAMANIO)
+        cuadrito[b].tamanio = random.randint(1, MAX_TAMANIO)
 
         # Calcula la posición inicial del vértice superior izquierdo (PosIni)
-        tam = objeto[b].tamanio
+        tam = cuadrito[b].tamanio
         # Asegura que el cuadro inicie dentro de la pantalla
         pos_x = random.randint(1, RES_X - tam - 2)
         pos_y = random.randint(tam + 1, RES_Y - 1) # Arriba de 0 + tamaño y abajo de RES_Y
 
         # Define los 4 vértices del cuadro
         # Nota: En C++ usaste un sistema donde el y positivo es ARRIBA. Mantendremos eso.
-        objeto[b].vertice = [
+        cuadrito[b].vertice = [
             (pos_x, pos_y),              # Vértice 0: Esq. Sup. Izq. (x, y)
             (pos_x + tam, pos_y),        # Vértice 1: Esq. Sup. Der. (x+t, y)
             (pos_x + tam, pos_y - tam),  # Vértice 2: Esq. Inf. Der. (x+t, y-t)
@@ -76,47 +76,50 @@ def CreaCuadros():
         ]
 
         # Factores de velocidad
-        objeto[b].factorX = random.randint(1, MAX_VELOCIDAD)
-        objeto[b].factorY = random.randint(1, MAX_VELOCIDAD)
+        cuadrito[b].factorX = random.randint(1, MAX_VELOCIDAD)
+        cuadrito[b].factorY = random.randint(1, MAX_VELOCIDAD)
 
         # Colores aleatorios
-        objeto[b].rojo = random.uniform(0.0, 1.0)
-        objeto[b].verde = random.uniform(0.0, 1.0)
-        objeto[b].azul = random.uniform(0.0, 1.0)
+        cuadrito[b].rojo = random.uniform(0.0, 1.0)
+        cuadrito[b].verde = random.uniform(0.0, 1.0)
+        cuadrito[b].azul = random.uniform(0.0, 1.0)
+
 
 def ChecaColisiones():
+    # global cuadrito
     for b in range(TOTAL_CUADROS):
         # Calcula el centro del cuadro actual
         # Vértice[0] es (x, y_max), Vértice[3] es (x, y_min)
-        x0, y0 = objeto[b].vertice[0]
-        x3, y3 = objeto[b].vertice[3]
+        x0, y0 = cuadrito[b].vertice[0]
+        x3, y3 = cuadrito[b].vertice[3]
         
-        centro_cuadro_x = x0 + objeto[b].tamanio / 2
-        centro_cuadro_y = y3 + objeto[b].tamanio / 2
+        centro_cuadro_x = (x0 + cuadrito[b].tamanio) / 2
+        centro_cuadro_y = (y3 + cuadrito[b].tamanio) / 2
 
         for c in range(TOTAL_CUADROS):
+            # quiere decir que no se compare consigo mismo
             if c != b:
                 # Calcula el centro del otro cuadro
-                xc, yc = objeto[c].vertice[0]
-                xz, yz = objeto[c].vertice[3]
+                xc, yc = cuadrito[c].vertice[0]
+                xz, yz = cuadrito[c].vertice[3]
                 
-                centro_otro_x = xc + objeto[c].tamanio / 2
-                centro_otro_y = yz + objeto[c].tamanio / 2
+                centro_otro_x = (xc + cuadrito[c].tamanio) / 2
+                centro_otro_y = (yz + cuadrito[c].tamanio) / 2
                 
                 # Cálculo de distancias
                 distX = abs(centro_cuadro_x - centro_otro_x)
                 distY = abs(centro_cuadro_y - centro_otro_y)
-                
-                distancia_zero = (objeto[b].tamanio + objeto[c].tamanio) / 2
+                                
+                distancia_zero = (cuadrito[b].tamanio + cuadrito[c].tamanio) / 2
                 
                 # El criterio de colisión es: si la distancia entre centros
                 # es menor o igual a la suma de la mitad de sus tamaños.
                 if distX <= distancia_zero and distY <= distancia_zero:
                     # Invierte la dirección de AMBOS cuadros
-                    objeto[b].factorX *= -1
-                    objeto[b].factorY *= -1
-                    objeto[c].factorX *= -1
-                    objeto[c].factorY *= -1
+                    cuadrito[b].factorX *= -1
+                    cuadrito[b].factorY *= -1
+                    cuadrito[c].factorX *= -1
+                    cuadrito[c].factorY *= -1
 
 # La función de dibujo principal (antes Animacion en C++)
 def dibujar_y_animar():
@@ -126,37 +129,37 @@ def dibujar_y_animar():
 
     # 1. Dibuja los cuadros
     for b in range(TOTAL_CUADROS):
-        glColor3f(objeto[b].rojo, objeto[b].verde, objeto[b].azul)
+        glColor3f(cuadrito[b].rojo, cuadrito[b].verde, cuadrito[b].azul)
         glBegin(GL_POLYGON)
-        for x, y in objeto[b].vertice:
-            # Usamos glVertex2i como en C++
+        for x, y in cuadrito[b].vertice:
+            # Usamos glVertex2i 
             glVertex2i(int(x), int(y))
         glEnd()
 
     # 2. Actualiza los límites (rebote en las paredes)
     for b in range(TOTAL_CUADROS):
         # Vértices del cuadro:
-        x_min = objeto[b].vertice[3][0] # x de la esq. inf. izq.
-        x_max = objeto[b].vertice[1][0] # x de la esq. sup. der.
-        y_min = objeto[b].vertice[3][1] # y de la esq. inf. izq.
-        y_max = objeto[b].vertice[0][1] # y de la esq. sup. izq.
+        x_min = cuadrito[b].vertice[3][0] # x de la esq. inf. izq.
+        x_max = cuadrito[b].vertice[1][0] # x de la esq. sup. der.
+        y_min = cuadrito[b].vertice[3][1] # y de la esq. inf. izq.
+        y_max = cuadrito[b].vertice[0][1] # y de la esq. sup. izq.
 
         if x_min <= 0 or x_max >= RES_X:
-            objeto[b].factorX *= -1
+            cuadrito[b].factorX *= -1
         if y_min <= 0 or y_max >= RES_Y:
-            objeto[b].factorY *= -1
+            cuadrito[b].factorY *= -1
 
     # 3. Mueve todos los cuadros
     for b in range(TOTAL_CUADROS):
         nuevos_vertices = []
-        for x, y in objeto[b].vertice:
-            nueva_x = x + objeto[b].factorX
-            nueva_y = y + objeto[b].factorY
+        for x, y in cuadrito[b].vertice:
+            nueva_x = x + cuadrito[b].factorX
+            nueva_y = y + cuadrito[b].factorY
             nuevos_vertices.append((nueva_x, nueva_y))
-        objeto[b].vertice = nuevos_vertices
+        cuadrito[b].vertice = nuevos_vertices
 
     # 4. Chequea colisiones entre cuadros
-    ChecaColisiones()
+    # ChecaColisiones()
     
     # En GLFW, el swap_buffers va en el bucle principal (ver abajo)
 
@@ -188,6 +191,7 @@ def main():
     while not glfw.window_should_close(window):
         # Llama a la función de dibujo y animación
         dibujar_y_animar()
+        ChecaColisiones()
 
         # Intercambia los buffers (Reemplaza glutSwapBuffers)
         glfw.swap_buffers(window)
