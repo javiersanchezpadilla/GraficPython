@@ -1,6 +1,7 @@
 """ Animación de cuadros que rebotan y colisionan entre sí
     Esta version del programa solo cambio el sentido de movimiento de los cuadros
-    cuando colisionan entre sí, y cuando chocan en los bordes de la ventana."""
+    cuando colisionan entre sí, y cuando chocan en los bordes de la ventana.
+    Esta version trata de respetar los sentidos de rebote entre los cuadros."""
 
 import glfw
 from OpenGL.GL import *
@@ -147,10 +148,22 @@ def ChecaColisiones():
                 # El criterio de colisión es: si la distancia entre centros
                 # es menor o igual a la suma de la mitad de sus tamaños.
                 if distX <= distancia_zero and distY <= distancia_zero:
-                    cuadrito[b].factorX *= -1
-                    cuadrito[b].factorY *= -1
-                    cuadrito[c].factorX *= -1
-                    cuadrito[c].factorY *= -1
+                    fx_b = cuadrito[b].factorX
+                    fy_b = cuadrito[b].factorY
+                    fx_c = cuadrito[c].factorX
+                    fy_c = cuadrito[c].factorY
+                    if (fx_b + fy_b + fx_c + fy_c) == 0:    # Van en direcciones opuestas
+                        cuadrito[b].factorX *= -1
+                        cuadrito[b].factorY *= -1
+                        cuadrito[c].factorX *= -1
+                        cuadrito[c].factorY *= -1
+                    elif fy_b == fy_c:
+                        cuadrito[b].factorX *= -1
+                        cuadrito[c].factorX *= -1
+                    else: #fx_b == fx_c:
+                        cuadrito[b].factorY *= -1
+                        cuadrito[c].factorY *= -1
+
                     mueve_cuadros(b)
                     mueve_cuadros(c)
 

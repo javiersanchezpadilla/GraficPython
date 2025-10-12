@@ -8,6 +8,8 @@
     actualizar y dibujar cada cuadro.
     De esta manera, se pueden manejar facilmente muchos cuadros sin necesidad de definir variables
     individuales para cada uno.
+    La animación es muy simple, ya que cuando colisionan dos cuadros, sin importar el angulo de colision,
+    ambos cuadros simplemente invierten su velocidad en ambas direcciones (x e y)
 """
 
 import glfw

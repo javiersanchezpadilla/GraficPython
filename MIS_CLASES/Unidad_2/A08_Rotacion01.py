@@ -1,35 +1,20 @@
-""" En este ejercicio se desarrollara el tema de rotación de un objeto alrededor de un punto.
-    LA ecuación matemática para la rotación de un punto (x, y) alrededor del origen (0, 0) por un ángulo θ es:
-        x' = x * cos(θ) - y * sin(θ)
-        y' = x * sin(θ) + y * cos(θ)
-    Donde (x', y') son las nuevas coordenadas del punto después de la rotación.
-    Si queremos rotar alrededor de un punto (h, k) que no es el origen, primero trasladamos el punto al origen,
-    aplicamos la rotación y luego trasladamos de vuelta:
-        1. Trasladar el punto al origen: (x - h, y - k)
-        2. Aplicar la rotación:
-            x' = (x - h) * cos(θ) - (y - k) * sin(θ)
-            y' = (x - h) * sin(θ) + (y - k) * cos(θ)
-        3. Trasladar de vuelta: (x' + h, y' + k)
-    Finalmente, combinando estos pasos, obtenemos las fórmulas finales para rotar alrededor del punto (h, k):
-        x' = (x - h) * cos(θ) - (y - k) * sin(θ) + h
-        y' = (x - h) * sin(θ) + (y - k) * cos(θ) + k    
-    
-     x_prima=x_r+(x-x_r)*cos(pi*ang_rotac/180)-(y-y_r)*sin(pi*ang_rotac/180)
-     y_prima=y_r+(y-y_r)*cos(pi*ang_rotac/180)+(x-x_r)*sin(pi*ang_rotac/180)
+""" Rotación de un punto alrededor DEL ORIGEN (0, 0)
+    La ecuación para rotar un punto (x, y) alrededor del origen (0, 0) en un ángulo θ (theta) es:
+
+    x' = x * cos(θ) - y * sin(θ)
+    y' = x * sin(θ) + y * cos(θ)
 
     Donde:
-        (x, y) son las coordenadas originales del punto.
-        (x', y') son las coordenadas del punto después de la rotación.
-        (h, k) es el punto alrededor del cual se rota.
-        θ es el ángulo de rotación en radianes.
+    (x, y) son las coordenadas originales del punto.
+    (x', y') son las nuevas coordenadas del punto después de la rotación.
+    θ (theta) es el ángulo de rotación. El valor de theta debe estar en radianes.
 
-        
-        ESTOY DESARROLLANDO ESTE EJERCICIO, ESTO QUIERE DECIR QUE ESTA IMCOMPLETO.
+    Si eliminamos la linea glClear(GL_COLOR_BUFFER_BIT) veremos el rastro del punto
 """
 
 import glfw
 from OpenGL.GL import *
-from math import cos, sin
+from math import cos, sin, pi
 
 
 def iniciar_ventana():
@@ -47,33 +32,41 @@ def iniciar_ventana():
     return ventana
 
 
-def rotar_punto():
+def rotar_punto(x, y, angulo_grados):
     glClearColor(0.0, 0.0, 0.0, 1.0)    # Limpia la pantalla
-    glClear(GL_COLOR_BUFFER_BIT)
+    glClear(GL_COLOR_BUFFER_BIT)        # Si quitamos esta linea, veremos el rastro del punto
 
-    PI = 3.141592653589793
-    radio = 0.6
-    puntos_a_dibujar = 100
-    glColor3f(1.0, 1.0, 0.0)     # Color amarillo brillante
+    glBegin(GL_LINES)                   # Dibuja los ejes
+    glColor3f(1.0, 1.0, 1.0)            # Ejes en color blanco
+    glVertex2f(-1.0, 0.0)
+    glVertex2f(1.0, 0.0)
+    glVertex2f(0.0, -1.0)
+    glVertex2f(0.0, 1.0)
+    glEnd()
+    
+    glColor3f(1.0, 1.0, 0.0)            # Color amarillo brillante
 
-    for i in range(puntos_a_dibujar + 1):
-        angulo = (i / puntos_a_dibujar) * 2 * PI
-        # Ecuación paramétrica
-        x = radio * cos(angulo)
-        y = radio * sin(angulo)
-
-        # Dibuja un punto en las coordenadas (x, y)
-        glBegin(GL_POINTS)
-        glVertex2f(x, y)
-        glEnd()
+    theta = angulo_grados * (pi / 180)  # Convertir grados a radianes
+    x_prima = x * cos(theta) - y * sin(theta)
+    y_prima = x * sin(theta) + y * cos(theta)
+ 
+    # Dibuja un punto en las coordenadas (x, y)
+    glPointSize(5)  # Tamaño del punto
+    glBegin(GL_POINTS)
+    glVertex2f(x_prima, y_prima)
+    glEnd()
+    return x_prima, y_prima
 
 
 if __name__ == "__main__":
     ventana = iniciar_ventana()
-    while not glfw.window_should_close(ventana):
-        
+    x = 0.5                 # Coordenada x del punto original
+    y = 0.0                 # Coordenada y del punto original
+    angulo_en_grados = 1    # Ángulo de rotación en grados
 
-        rotar_punto()         
+    while not glfw.window_should_close(ventana):
+        x, y = rotar_punto(x, y, angulo_en_grados)         
+        angulo_en_grados += 0.01  # Incrementa el ángulo para la próxima rotación
         glfw.swap_buffers(ventana)
         glfw.poll_events()
 

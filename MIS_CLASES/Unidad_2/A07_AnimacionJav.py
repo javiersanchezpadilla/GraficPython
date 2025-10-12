@@ -8,6 +8,7 @@
     actualizar y dibujar cada cuadro.
     De esta manera, se pueden manejar facilmente muchos cuadros sin necesidad de definir variables
     individuales para cada uno.
+    LA DIFERENCIA DE ESTE CÓDIGO ES QUE RESPETA LA ESCALA SIN IMPORTAR EL TAMAÑO DE LA VENTANA.
 """
 
 import glfw

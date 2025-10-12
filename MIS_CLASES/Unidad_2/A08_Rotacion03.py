@@ -1,11 +1,18 @@
+""" Aplicación de la rotación sobre dos puntos
+    En este ejercicio no se actualiza el angulo de rotación, para lograr que los puntos roten indefinidamente
+    lo que se cambia el punto original por el punto rotado en cada iteración del bucle principal,lo que 
+    hace que se tenga que calcular de nuevo la rotación con base al mismo angulo inicial, pero sobre
+    una nueva posición del punto (que es la calculada en la iteración anterior), esto es, tenemos (x, y)
+    y se calcula (x', y') con el angulo inicial, luego en la siguiente iteración se toma (x', y') como
+    el nuevo punto original (x, y) pero asignando (x=x', y=y') y se vuelve a calcular (x', y') 
+    con el mismo angulo inicial, y así sucesivamente.
+"""
+
 import glfw
 from OpenGL.GL import *
-from math import cos, sin, pi
+import math 
 
 
-radio = 0.6
-puntos_a_dibujar = 5
-punto_circulo = 1
 
 def iniciar_ventana():
     """
@@ -22,78 +29,85 @@ def iniciar_ventana():
     return ventana
 
 
-# def rotar_punto():
-#     """
-#     La funcion `rotar_punto` rota un punto alrededor de un circulo y lo dibuja usando OpenGL.
-#     """
-    
-#     global punto_circulo
-#     punto_circulo += 1
-
-#     angulo = (punto_circulo / puntos_a_dibujar) * 2 * 3.141592653589793
-#     # Ecuación paramétrica
-#     x = radio * cos(angulo)
-#     y = radio * sin(angulo)
-#     glPointSize(3)          # Tamaño del punto
-
-#     # Dibuja un punto en las coordenadas (x, y)
-#     glBegin(GL_POINTS)
-#     glVertex2f(x, y)
-#     glEnd()
 
 def rotar_punto(x, y, p_x, p_y, angulo_grados):
     """
-    Rota un punto (x, y) alrededor de un pivote (p_x, p_y) por un ángulo.
+    Calcula la rotación de un punto (x, y) alrededor de un pivote (p_x, p_y) por un ángulo.
     """
     # 1. Convertir el ángulo a radianes
     angulo_rad = math.radians(angulo_grados)
-    
+   
     # 2. Trasladar al origen
-    x_t = x - p_x
-    y_t = y - p_y
+    x_trasladado = x - p_x
+    y_trasladado = y - p_y
     
     # 3. Rotar
-    x_rot = x_t * math.cos(angulo_rad) - y_t * math.sin(angulo_rad)
-    y_rot = x_t * math.sin(angulo_rad) + y_t * math.cos(angulo_rad)
+    x_prima = x_trasladado * math.cos(angulo_rad) - y_trasladado * math.sin(angulo_rad)
+    y_prima = x_trasladado * math.sin(angulo_rad) + y_trasladado * math.cos(angulo_rad)
     
     # 4. Trasladar de vuelta
-    x_final = x_rot + p_x
-    y_final = y_rot + p_y
-    
+    x_final = x_prima + p_x
+    y_final = y_prima + p_y
+
     return (x_final, y_final)
 
 
-def dibujar_punto(x, y):
+
+def dibuja_punto(x, y):
     """
-    Dibuja un punto en las coordenadas (x, y) usando OpenGL.
+    Dibuja un punto en las coordenadas (x, y).
     """
-    # Ejemplo con tus valores
-    punto_original = (0.5, 0.5)
-    pivote = (0.3, 0.3)
-    angulo = 90
-
-    nuevo_punto = rotar_punto(punto_original[0], punto_original[1], pivote[0], pivote[1], angulo)
-
-    print(f"Punto original: {punto_original}")
-    print(f"Pivote: {pivote}")
-    # El resultado será (1.0, 5.0) con posibles decimales por la precisión de float
-    print(f"Punto rotado {angulo} grados: {nuevo_punto}")
-
-    glPointSize(3)          # Tamaño del punto
+    glPointSize(5)  # Tamaño del punto
     glBegin(GL_POINTS)
     glVertex2f(x, y)
     glEnd()
 
 
+def dibuja_ejes():
+    """
+    Dibuja los ejes coordenados.
+    """
+    glBegin(GL_LINES)                   # Dibuja los ejes
+    glColor3f(1.0, 1.0, 1.0)            # Ejes en color blanco
+    glVertex2f(-1.0, 0.0)
+    glVertex2f(1.0, 0.0)
+    glVertex2f(0.0, -1.0)
+    glVertex2f(0.0, 1.0)
+    glEnd()
+
+
+def dibuja(pivote, punto1, punto2, angulo_en_grados01, angulo_en_grados02):
+    """
+    Rota un punto (x, y) alrededor de un pivote (p_x, p_y) por un ángulo.
+    """
+    glClearColor(0.0, 0.0, 0.0, 1.0)    # Limpia la pantalla
+    glClear(GL_COLOR_BUFFER_BIT)        # Si quitamos esta linea, veremos el rastro del punto
+    glColor3f(1.0, 1.0, 0.0)            # Color amarillo brillante
+
+    dibuja_ejes()
+    punto_rotado1 = rotar_punto(punto1[0], punto1[1], pivote[0], pivote[1], angulo_en_grados01)
+    dibuja_punto(punto_rotado1[0], punto_rotado1[1])
+    punto_rotado2 = rotar_punto(punto2[0], punto2[1], pivote[0], pivote[1], angulo_en_grados02)
+    dibuja_punto(punto_rotado2[0], punto_rotado2[1])
+
+    return punto_rotado1, punto_rotado2
+
+    
 
 if __name__ == "__main__":
     ventana = iniciar_ventana()
-    glClearColor(0.0, 0.0, 0.0, 1.0)    # Limpia la pantalla
-    glClear(GL_COLOR_BUFFER_BIT)    
+
+    angulo_en_grados01 = 2.0
+    angulo_en_grados02 = 0.5
+    pivote = (0.0, 0.0)
+    punto1 = (0.7, 0.7)
+    punto2 = (0.5, 0.5)
+
     while not glfw.window_should_close(ventana):
-        glClearColor(0.0, 0.0, 0.0, 1.0)    # Limpia la pantalla
-        glClear(GL_COLOR_BUFFER_BIT)    
-        rotar_punto()         
+        # aunque punto1 y punto2 son tuplas, al hacer la asignación
+        # punto1 = punto_rotado1, se convierten en listas
+        # para permitir la actualización de sus valores
+        punto1, punto2 = dibuja(pivote, punto1, punto2, angulo_en_grados01, angulo_en_grados02)
         glfw.swap_buffers(ventana)
         glfw.poll_events()
 
