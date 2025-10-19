@@ -1,32 +1,25 @@
+""" En este ejercicio controlaremos la velocidad de los patrones"""
+
 import glfw
 from OpenGL.GL import *
-import numpy as np # Necesitamos NumPy para manejar la matriz de bytes de forma eficiente
+import numpy as np          # Necesitamos NumPy para manejar la matriz de bytes de forma eficiente
+import random as rn
+import time
 
-# --- 1. Definición del Mapa de Bits ---
-# Creamos un patrón binario de 32x32 que representa un "cuadrado" o patrón simple.
-# Cada byte (GLubyte) representa 8 píxeles. Usamos '0xff' para 8 píxeles encendidos.
-# Los datos deben estar en formato C-style (generalmente de abajo hacia arriba).
-# Este arreglo representa un cuadrado simple o un patrón en la esquina.
-BITMAP_WIDTH = 32
-BITMAP_HEIGHT = 32
-
-# Definición del patrón binario (8x8 píxeles)
-# Por ejemplo: [0xFF, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0xFF] (Un cuadro hueco)
-# Usaremos un patrón más sencillo de 4x4 dentro de la matriz 8x8:
-
-PackMan1 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,            # Fila 1 (Superior)
+# Definición de los patrones para simular el movimiento
+packman01 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,           
 0x00, 0xff, 0xfe, 0x00, 0x03, 0xff, 0xfc, 0x00, 0x07, 0xff, 0xfc, 0x00,
 0x0f, 0xff, 0xf8, 0x00, 0x1f, 0xff, 0xf8, 0x00, 0x3f, 0xff, 0xf0, 0x00,
-0x3f, 0xff, 0xf0, 0x00, 0x7f, 0xff, 0xf0, 0x00, 0x7f, 0xff, 0xe0, 0x00,         # 0x0F -->  0000 1111
+0x3f, 0xff, 0xf0, 0x00, 0x7f, 0xff, 0xf0, 0x00, 0x7f, 0xff, 0xe0, 0x00,        
 0x7f, 0xff, 0xc0, 0x00, 0xff, 0xff, 0xc0, 0x00, 0xff, 0xff, 0x80, 0x00,
 0xff, 0xff, 0x80, 0x00, 0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00,
 0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0xc0, 0x00, 0xff, 0xff, 0xe0, 0x00,
 0x7f, 0xf1, 0xe0, 0x00, 0x7f, 0xe0, 0xf0, 0x00, 0x7f, 0xe0, 0xf8, 0x00,
 0x3f, 0xe0, 0xfc, 0x00, 0x3f, 0xf1, 0xfc, 0x00, 0x1f, 0xff, 0xfe, 0x00,
 0x0f, 0xff, 0xff, 0x00, 0x07, 0xff, 0xff, 0x80, 0x03, 0xff, 0xff, 0x80,
-0x01, 0xff, 0xff, 0x80, 0x00, 0x7f, 0xfe, 0x00, 0x00, 0x0f, 0xe0, 0x00], dtype=np.ubyte)    # Fila 8 (Inferior)
+0x01, 0xff, 0xff, 0x80, 0x00, 0x7f, 0xfe, 0x00, 0x00, 0x0f, 0xe0, 0x00], dtype=np.ubyte)   
 
-PackMan2 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,
+packman02 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,
 0x00, 0xff, 0xff, 0x00, 0x03, 0xff, 0xff, 0xc0, 0x07, 0xff, 0xff, 0xe0,
 0x0f, 0xff, 0xff, 0xf0, 0x1f, 0xff, 0xff, 0xe0, 0x3f, 0xff, 0xff, 0xc0,
 0x3f, 0xff, 0xff, 0x80, 0x7f, 0xff, 0xff, 0x00, 0x7f, 0xff, 0xfe, 0x00,
@@ -39,7 +32,7 @@ PackMan2 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,
 0x01, 0xff, 0xff, 0x80, 0x00, 0x7f, 0xfe, 0x00, 0x00, 0x0f, 0xe0, 0x00], dtype=np.ubyte)
 
 
-PackMan3 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,
+packman03 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,
 0x00, 0xff, 0xff, 0x80, 0x03, 0xff, 0xff, 0xc0, 0x07, 0xff, 0xff, 0xe0,
 0x0f, 0xff, 0xff, 0xf0, 0x1f, 0xff, 0xff, 0xf8, 0x3f, 0xff, 0xff, 0xfc,
 0x3f, 0xff, 0xff, 0xfc, 0x7f, 0xff, 0xff, 0xfc, 0x7f, 0xff, 0xff, 0xfe,
@@ -51,7 +44,7 @@ PackMan3 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,
 0x0f, 0xff, 0xff, 0xf0, 0x07, 0xff, 0xff, 0xe0, 0x03, 0xff, 0xff, 0xc0,
 0x01, 0xff, 0xff, 0x80, 0x00, 0x7f, 0xfe, 0x00, 0x00, 0x0f, 0xe0, 0x00], dtype=np.ubyte)
 
-PackMan4 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,
+packman04 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,
 0x00, 0xff, 0xff, 0x80, 0x03, 0xff, 0xff, 0xc0, 0x07, 0xff, 0xff, 0xe0,
 0x0f, 0xff, 0xff, 0xf0, 0x1f, 0xff, 0xff, 0xf8, 0x3f, 0xff, 0xff, 0xfc,
 0x3f, 0xff, 0xff, 0xfc, 0x7f, 0xff, 0xff, 0xfe, 0x7f, 0xff, 0xff, 0xfe,
@@ -64,47 +57,61 @@ PackMan4 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,
 0x01, 0xff, 0xff, 0x80, 0x00, 0x7f, 0xfe, 0x00, 0x00, 0x0f, 0xe0, 0x00 ], dtype=np.ubyte)
 
 
+que_packman = [packman01, packman02, packman03, packman04, packman03, packman02]
+que_patron = 0
+pos_x = 2
+pos_y = 30
+inc_x = 0
+inc_y = 0
 
-def dibujar_mapa_bits():
-    """Función que usa glRasterPos2i() y glBitmap() para dibujar el patrón."""
-    
-    # 1. Establecer el color para los píxeles encendidos (donde el bit es 1)
-    glColor3f(1.0, 1.0, 0.0)  # Amarillo
 
-    # 2. Establecer la posición de trama (Raster Position) en coordenadas de ventana
-    # En este caso, usaremos coordenadas de ventana (píxeles), no las coordenadas -1 a 1 de OpenGL.
-    glRasterPos2i(100, 100) # El mapa de bits empezará a dibujarse en el pixel (100, 100)
-    
-    # 3. Dibujar el mapa de bits
-    # Parámetros: width, height, xorig, yorig, xmove, ymove, bitmap_data
-    glBitmap(
-        BITMAP_WIDTH,         # Ancho del mapa de bits (en píxeles)
-        BITMAP_HEIGHT,        # Alto del mapa de bits (en píxeles)
-        0.0, 0.0,             # Origen (usaremos el borde inferior izquierdo como origen)
-        0.0, 0.0,             # No mover la posición de trama después de dibujar
-        PackMan1           # El arreglo de bytes que contiene el patrón
-    )
+class MapaBitsDelPackman:
+    def __init__(self, x, y, vel, inter, lista_mapas):
+        self.pos_x = x
+        self.pos_y = y
+        self.velocidad = vel
+        self.intervalo = inter # Se movera cada intervalo de fotogramas
+        self.figura = lista_mapas
+        self.que_figura = 0
+        self.contador_ciclos = 0
+        self.rojo = rn.random()
+        self.verde = rn.random()
+        self.azul = rn.random()
+        
+    def dibujar(self):
+        glColor3f(self.rojo, self.verde, self.azul)
+        glRasterPos2i(self.pos_x, self.pos_y)
+        glBitmap(32, 32, 0.0, 0.0, 0.0, 0.0, self.figura[self.que_figura]);
 
-    glRasterPos2i(200, 100) # El mapa de bits empezará a dibujarse en el pixel (200, 100)
-    glBitmap( BITMAP_WIDTH, BITMAP_HEIGHT, 0.0, 0.0, 0.0, 0.0, PackMan2)
+    def actualizar(self):
+        # Cada figura se mueve a SU propia velocidad
+        self.contador_ciclos += 1
+        if self.contador_ciclos >= self.intervalo:
+            self.contador_ciclos = 0
+            self.pos_x += self.velocidad
+        # Ajustamos los valores de acuerdo a la pantalla
+        if self.pos_x >= 500:
+            self.pos_x = -5
 
-    glRasterPos2i(300, 100) # El mapa de bits empezará a dibujarse en el pixel (300, 100)
-    glBitmap( BITMAP_WIDTH, BITMAP_HEIGHT, 0.0, 0.0, 0.0, 0.0, PackMan3)
-
-    glRasterPos2i(400, 100) # El mapa de bits empezará a dibujarse en el pixel (400, 100)
-    glBitmap( BITMAP_WIDTH, BITMAP_HEIGHT, 0.0, 0.0, 0.0, 0.0, PackMan4)
-
+        self.dibujar()
+        self.que_figura += 1
+        if self.que_figura >= 6:
+            self.que_figura = 0
+        # print("contador ciclo", self.contador_ciclos, )
+           
 
 
 def iniciar_ventana():
     if not glfw.init():
         raise Exception("No se pudo iniciar GLFW")
-    ventana = glfw.create_window(800, 600, "glBitmap y glRasterPos2i", None, None)
+    ventana = glfw.create_window(400, 300, "glBitmap y glRasterPos2i", None, None)
     if not ventana:
         glfw.terminate()
         raise Exception("No se pudo crear la ventana")
     glfw.make_context_current(ventana)
     return ventana
+
+
 
 def configurar_coordenadas_ventana(ancho, alto):
     """Configura la proyección para usar coordenadas de píxeles (ventana)."""
@@ -119,27 +126,34 @@ def configurar_coordenadas_ventana(ancho, alto):
     # por lo que es esencial configurar la proyección a coordenadas de ventana.
 
 
-def main():
-    ventana_ancho = 800
-    ventana_alto = 600
+
+if __name__ == "__main__":
     ventana = iniciar_ventana()
 
     # Configurar la proyección para trabajar con coordenadas de píxeles
-    configurar_coordenadas_ventana(ventana_ancho, ventana_alto)
-    
+    configurar_coordenadas_ventana(500 , 500)
     glClearColor(0.0, 0.0, 0.2, 1.0) # Fondo azul oscuro
-    
+
+    p01 = MapaBitsDelPackman(1, 10, 1, 2, que_packman)
+    p02 = MapaBitsDelPackman(1, 110, 2, 2, que_packman)    
+    p03 = MapaBitsDelPackman(1, 210, 4, 2, que_packman)
+    p04 = MapaBitsDelPackman(1, 310, 8, 2, que_packman)
+    p05 = MapaBitsDelPackman(1, 410, 10, 2, que_packman)
+    lista_packmans = [p01, p02, p03, p04, p05]
+
+    ciclo = 0
+
     while not glfw.window_should_close(ventana):
         glClear(GL_COLOR_BUFFER_BIT)
-        
+
         # Llama a la función de dibujo de mapa de bits
-        dibujar_mapa_bits()
-        
+        lista_packmans[ciclo].actualizar()
+        ciclo += 1
+        if ciclo > (len(lista_packmans) - 1):       # PAra navegar dentro de la lista de objetos
+            ciclo = 0
+        # time.sleep(0.5)
         glfw.swap_buffers(ventana)
         glfw.poll_events()
     
     glfw.terminate()
-
-
-if __name__ == "__main__":
-    main()
+    
