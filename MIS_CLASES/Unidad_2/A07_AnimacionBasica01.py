@@ -5,8 +5,7 @@
 
 import glfw
 from OpenGL.GL import *
-import numpy as np
-import time
+
 
 # Variables globales para el estado del cuadro
 posicion_x = -0.9       # Posición inicial en el lado izquierdo

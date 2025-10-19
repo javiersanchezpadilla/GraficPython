@@ -34,11 +34,11 @@ def dibuja_cuadro(vert_esq_sup_izq, tamanio):
         param tamanio: tamaño del cuadro (lado)
     """     
     glBegin(GL_QUADS)
-    glColor3f(random.random(), random.random(), random.random())   # Color aleatorio del cuadro
-    glVertex2f(vert_esq_sup_izq[0], vert_esq_sup_izq[1])                         # Coordenada de dibujo
-    glVertex2f(vert_esq_sup_izq[0] + tamanio, vert_esq_sup_izq[1])             # Coordenada de dibujo
-    glVertex2f(vert_esq_sup_izq[0] + tamanio, vert_esq_sup_izq[1] - tamanio) # Coordenada de dibujo
-    glVertex2f(vert_esq_sup_izq[0], vert_esq_sup_izq[1] - tamanio)             # Coordenada de dibujo
+    glColor3f(random.random(), random.random(), random.random())                # Color aleatorio del cuadro
+    glVertex2f(vert_esq_sup_izq[0], vert_esq_sup_izq[1])                        # Coordenada de dibujo
+    glVertex2f(vert_esq_sup_izq[0] + tamanio, vert_esq_sup_izq[1])              # Coordenada de dibujo
+    glVertex2f(vert_esq_sup_izq[0] + tamanio, vert_esq_sup_izq[1] - tamanio)    # Coordenada de dibujo
+    glVertex2f(vert_esq_sup_izq[0], vert_esq_sup_izq[1] - tamanio)              # Coordenada de dibujo
     glEnd()
 
 
@@ -46,7 +46,7 @@ def dibuja():
     posicion_x = random.uniform(-1, 0.5)
     posicion_y = random.uniform(-0.5, 1)
     tamanio = random.uniform(0.1, 0.5)
-    dibuja_cuadro((posicion_x, posicion_y + tamanio), tamanio)
+    dibuja_cuadro((posicion_x, posicion_y), tamanio)
 
 
 if __name__ == "__main__":

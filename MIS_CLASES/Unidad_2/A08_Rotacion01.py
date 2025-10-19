@@ -67,6 +67,7 @@ if __name__ == "__main__":
     while not glfw.window_should_close(ventana):
         x, y = rotar_punto(x, y, angulo_en_grados)         
         angulo_en_grados += 0.01  # Incrementa el ángulo para la próxima rotación
+        print(f"Nuevo punto rotado: ({x:.3f}, {y:.3f})")
         glfw.swap_buffers(ventana)
         glfw.poll_events()
 
