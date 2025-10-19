@@ -1,4 +1,6 @@
-""" Manejo de los puertos de visión
+""" Manejo de los puertos de visión.
+    En este ejemplo podemos modificar el tamaño de la ventana y automaticamente se reajustara la escala.
+
     los puertos de visión o viewports son fundamentales para controlar dónde se dibujan tus gráficos dentro de 
     la ventana de la aplicación.
     Un Puerto de Visión es la región rectangular de la ventana de tu aplicación a la que OpenGL mapea el espacio 
@@ -81,7 +83,6 @@ def framebuffer_size_callback(window, width, height):
 
 def dibujar():
     glColor3f(1.0, 0.0, 0.0)
-    glViewport(0, 300, 300, 300)
     glBegin(GL_QUADS)
     glVertex3i(-5,-5, 0)
     glVertex3i(-5, 5, 0)
@@ -89,14 +90,14 @@ def dibujar():
     glVertex3i( 5,-5, 0)
     glEnd()
     glColor3f(0.0, 1.0, 0.0)
-    glViewport(300, 300, 300, 300)
+
     glBegin(GL_TRIANGLES)
     glVertex3i(-5,-5, 0)
     glVertex3i( 0, 5, 0)
     glVertex3i( 5,-5, 0)
     glEnd()
     glColor3f(0.0, 0.0, 1.0)
-    glViewport(0, 0, 300, 300)
+
     glBegin(GL_POLYGON)
     glVertex3i(-5, 0, 0)
     glVertex3i( 0, 5, 0)
@@ -104,7 +105,7 @@ def dibujar():
     glVertex3i( 5,-5, 0)
     glEnd()
     glColor3f(1.0, 1.0, 0.0)
-    glViewport(300, 0, 300, 300)
+
     glBegin(GL_POLYGON)
     glVertex3i(-5, 0, 0)
     glVertex3i( 0, 5, 0)
@@ -121,7 +122,7 @@ def main():
     ventana = iniciar_ventana()
 
     # Configurar la proyección para trabajar con coordenadas de píxeles
-    configurar_coordenadas_ventana(ventana_ancho, ventana_alto)
+    configurar_coordenadas_ventana(-10.0, 10.0, -10.0, 10.0)
     glClearColor(0.0, 0.0, 0.2, 1.0) # Fondo azul oscuro
     glfw.set_framebuffer_size_callback(ventana, framebuffer_size_callback)
     
