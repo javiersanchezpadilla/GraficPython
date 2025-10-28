@@ -1,0 +1,1044 @@
+""" Código 1:
+Transformaciones 2D Básicas en OpenGL usando Python y GLFW.
+
+Este script muestra las tres transformaciones básicas en 2D aplicadas a un cuadrado:
+1. TRASLACIÓN: Mover un objeto de un lugar a otro
+2. ROTACIÓN: Girar un objeto alrededor del origen
+3. ESCALADO: Hacer un objeto más grande o más pequeño
+
+Se dibuja un cuadrado que rota continuamente mientras muestra las transformaciones.
+"""
+
+import glfw
+from OpenGL.GL import *
+import math
+
+
+def iniciar_ventana():
+    """
+    La funcion `iniciar_ventana` inicializa una ventana GLFW con dimensiones especificas y titulo 
+    :return: La funcion `iniciar_ventana` retorna la ventana GLFW como un objeto del tipo 'ventana'.
+    """
+    if not glfw.init():
+        raise Exception("No se pudo iniciar GLFW")
+    ventana = glfw.create_window(800, 800, "Transformaciones 2D", None, None)
+    if not ventana:
+        glfw.terminate()
+        raise Exception("No se pudo crear la ventana")
+    glfw.make_context_current(ventana)
+    return ventana
+
+
+def dibujar_ejes():
+    """
+    Dibuja los ejes coordenados para referencia.
+    """
+    glBegin(GL_LINES)
+    glColor3f(1.0, 1.0, 1.0)  # Ejes en color blanco
+    # Eje X
+    glVertex2f(-1.0, 0.0)
+    glVertex2f(1.0, 0.0)
+    # Eje Y
+    glVertex2f(0.0, -1.0)
+    glVertex2f(0.0, 1.0)
+    glEnd()
+
+
+def aplicar_escalado(vertices, tamanio):
+    """
+    Aplica escalado a los vértices.
+    
+    :param vertices: Lista de vértices [(x1,y1), (x2,y2), ...]
+    :param tamanio: Factor de escala
+    :return: Lista de vértices escalados
+    """
+    vertices_escalados = []
+    
+    for vertice in vertices:
+        x = vertice[0]
+        y = vertice[1]
+        
+        # ESCALADO: Multiplicar por el tamaño
+        x_escalado = x * tamanio
+        y_escalado = y * tamanio
+        
+        vertice_escalado = (x_escalado, y_escalado)
+        vertices_escalados.append(vertice_escalado)
+    
+    return vertices_escalados
+
+
+def aplicar_rotacion(vertices, angulo_grados):
+    """
+    Aplica rotación a los vértices alrededor del origen.
+    
+    :param vertices: Lista de vértices [(x1,y1), (x2,y2), ...]
+    :param angulo_grados: Ángulo de rotación en grados
+    :return: Lista de vértices rotados
+    """
+    # Convertir el ángulo a radianes
+    angulo_rad = math.radians(angulo_grados)
+    
+    # Calcular coseno y seno
+    coseno = math.cos(angulo_rad)
+    seno = math.sin(angulo_rad)
+    
+    vertices_rotados = []
+    
+    for vertice in vertices:
+        x = vertice[0]
+        y = vertice[1]
+        
+        # ROTACIÓN: Fórmulas x' = x*cos(θ) - y*sin(θ), y' = x*sin(θ) + y*cos(θ)
+        x_rotado = x * coseno - y * seno
+        y_rotado = x * seno + y * coseno
+        
+        vertice_rotado = (x_rotado, y_rotado)
+        vertices_rotados.append(vertice_rotado)
+    
+    return vertices_rotados
+
+
+def aplicar_traslacion(vertices, dx, dy):
+    """
+    Aplica traslación a los vértices.
+    
+    :param vertices: Lista de vértices [(x1,y1), (x2,y2), ...]
+    :param dx: Desplazamiento en x
+    :param dy: Desplazamiento en y
+    :return: Lista de vértices trasladados
+    """
+    vertices_trasladados = []
+    
+    for vertice in vertices:
+        x = vertice[0]
+        y = vertice[1]
+        
+        # TRASLACIÓN: Sumar el desplazamiento
+        x_trasladado = x + dx
+        y_trasladado = y + dy
+        
+        vertice_trasladado = (x_trasladado, y_trasladado)
+        vertices_trasladados.append(vertice_trasladado)
+    
+    return vertices_trasladados
+
+
+def dibujar_cuadrado(vertices):
+    """
+    Dibuja un cuadrado con los vértices dados.
+    
+    :param vertices: Lista de 4 vértices [(x1,y1), (x2,y2), (x3,y3), (x4,y4)]
+    """
+    glBegin(GL_QUADS)
+    glColor3f(1.0, 1.0, 0.0)  # Color amarillo
+    
+    for vertice in vertices:
+        x = vertice[0]
+        y = vertice[1]
+        glVertex2f(x, y)
+    
+    glEnd()
+    
+def actualizar_rotacion(angulo):
+    """
+    Actualiza el ángulo de rotación.
+    
+    :param angulo: Ángulo actual en grados
+    :return: Nuevo ángulo actualizado
+    """
+    # Incrementar el ángulo
+    angulo = angulo + 1.0
+    
+    # Si el ángulo llega a 360, reiniciar a 0
+    if angulo >= 360.0:
+        angulo = 0.0
+    
+    return angulo
+
+
+def actualizar_escalado(tamanio, factor_escala, tamanio_minimo, tamanio_maximo):
+    """
+    Actualiza el tamaño del cuadrado (crece y decrece).
+    
+    :param tamanio: Tamaño actual
+    :param factor_escala: Velocidad de crecimiento/decrecimiento
+    :param tamanio_minimo: Tamaño mínimo permitido
+    :param tamanio_maximo: Tamaño máximo permitido
+    :return: Nuevo tamaño y nuevo factor de escala
+    """
+    # Actualizar el tamaño
+    tamanio = tamanio + factor_escala
+    
+    # Invertir la dirección del crecimiento si llega a los límites
+    if tamanio >= tamanio_maximo or tamanio <= tamanio_minimo:
+        factor_escala = factor_escala * -1
+    
+    return tamanio, factor_escala
+
+
+def actualizar_posicion(posicion, velocidad, limite):
+    """
+    Actualiza la posición en un eje (rebota en los límites).
+    
+    :param posicion: Posición actual
+    :param velocidad: Velocidad de movimiento
+    :param limite: Límite de movimiento (positivo y negativo)
+    :return: Nueva posición y nueva velocidad
+    """
+    # Actualizar la posición
+    posicion = posicion + velocidad
+    
+    # Invertir dirección si llega a los límites
+    if posicion >= limite or posicion <= -limite:
+        velocidad = velocidad * -1
+    
+    return posicion, velocidad
+
+
+def programa_principal():
+    """
+    Programa principal que muestra un cuadrado rotando, cambiando de tamaño y moviéndose continuamente.
+    """
+    ventana = iniciar_ventana()
+    
+    # Definir los 4 vértices de un cuadrado unitario centrado en el origen
+    vertices_originales = [
+        (0.5, 0.5),    # Esquina superior derecha
+        (-0.5, 0.5),   # Esquina superior izquierda
+        (-0.5, -0.5),  # Esquina inferior izquierda
+        (0.5, -0.5)    # Esquina inferior derecha
+    ]
+    
+    # Parámetros de transformación
+    posicion_x = 0.0        # Centro x del cuadrado (TRASLACIÓN)
+    posicion_y = 0.0        # Centro y del cuadrado (TRASLACIÓN)
+    tamanio = 0.4           # Tamaño del cuadrado (ESCALADO)
+    angulo = 0.0            # Ángulo inicial de rotación (ROTACIÓN)
+    
+    # Parámetros para animar el tamaño
+    factor_escala = 0.01    # Cuánto crece o decrece el tamaño por frame
+    tamanio_minimo = 0.2    # Tamaño mínimo del cuadrado
+    tamanio_maximo = 0.6    # Tamaño máximo del cuadrado
+    
+    # Parámetros para animar la posición (TRASLACIÓN)
+    velocidad_x = 0.01      # Velocidad de movimiento en x
+    velocidad_y = 0.008     # Velocidad de movimiento en y
+    limite_x = 0.7          # Límite de movimiento en x
+    limite_y = 0.7          # Límite de movimiento en y
+    
+    while not glfw.window_should_close(ventana):
+        # Limpiar la pantalla
+        glClearColor(0.0, 0.0, 0.0, 1.0)
+        glClear(GL_COLOR_BUFFER_BIT)
+        
+        # Dibujar los ejes
+        dibujar_ejes()
+        
+        # Aplicar transformaciones en orden: ESCALADO -> ROTACIÓN -> TRASLACIÓN
+        vertices = vertices_originales
+        vertices = aplicar_escalado(vertices, tamanio)
+        vertices = aplicar_rotacion(vertices, angulo)
+        vertices = aplicar_traslacion(vertices, posicion_x, posicion_y)
+        
+        # Dibujar el cuadrado con los vértices transformados
+        dibujar_cuadrado(vertices)
+        
+        # Actualizar animaciones
+        angulo = actualizar_rotacion(angulo)
+        tamanio, factor_escala = actualizar_escalado(tamanio, factor_escala, tamanio_minimo, tamanio_maximo)
+        posicion_x, velocidad_x = actualizar_posicion(posicion_x, velocidad_x, limite_x)
+        posicion_y, velocidad_y = actualizar_posicion(posicion_y, velocidad_y, limite_y)
+        
+        # Intercambiar búferes
+        glfw.swap_buffers(ventana)
+        glfw.poll_events()
+    
+    glfw.terminate()
+
+
+if __name__ == "__main__":
+    programa_principal()
+
+
+""" Código 2:
+Curvas de Bézier en OpenGL usando Python y GLFW.
+Este script crea una ventana utilizando GLFW y dibuja una curva de Bézier definida por puntos de control.
+Además, anima un punto que se mueve a lo largo de la curva.
+"""
+
+import glfw
+from OpenGL.GL import *
+import math 
+from random import random
+
+def iniciar_ventana():
+    """
+    La funcion iniciar_ventana inicializa una ventana GLFW con dimensiones especificas y titulo 
+    :return: La funcion iniciar_ventana retorna la ventana GLFW como un objeto del tipo 'ventana'.
+    """
+    if not glfw.init():
+        raise Exception("No se pudo iniciar GLFW")
+    ventana = glfw.create_window(800, 600, "Mi primera ventana como funcion en OpenGL", None, None)
+    if not ventana:
+        glfw.terminate()
+        raise Exception("No se pudo crear la ventana")
+    glfw.make_context_current(ventana)
+    return ventana
+
+def bezier(t, puntos_control):
+    """
+    Calcula un punto en una curva de Bézier dada una lista de puntos de control y un parámetro t.
+    :param t: Parámetro entre 0 y 1 que indica la posición en la curva.
+    :param puntos_control: Lista de puntos de control, donde cada punto es una tupla (x, y).
+    :return: Punto (x, y) en la curva de Bézier correspondiente al parámetro t.
+    """
+    # Número de puntos de control menos 1 (grado de la curva)
+    n = len(puntos_control) - 1
+    
+    # Coordenadas del punto resultante en la curva
+    x = 0
+    y = 0
+    
+    # Recorremos cada punto de control
+    for i, (px, py) in enumerate(puntos_control):
+        # Calculamos el coeficiente binomial: n! / (i! * (n-i)!)
+        coeficiente_binomial = math.comb(n, i)
+        
+        # Calculamos el término del polinomio de Bernstein
+        # Este término determina cuánto influye este punto de control
+        termino = coeficiente_binomial * (t ** i) * ((1 - t) ** (n - i))
+        
+        # Sumamos la contribución de este punto de control a las coordenadas finales
+        x += termino * px
+        y += termino * py
+    
+    return (x, y)
+
+def dibuja_ejes():
+    """
+    Dibuja los ejes coordenados.
+    """
+    glBegin(GL_LINES)                   # Dibuja los ejes
+    glColor3f(0.3, 0.3, 0.4)            # Ejes en color gris
+    glVertex2f(-1.0, 0.0)
+    glVertex2f(1.0, 0.0)
+    glVertex2f(0.0, -1.0)
+    glVertex2f(0.0, 1.0)
+    glEnd()
+
+# Tiempo en segundos para completar un ciclo de animación
+SEGUNDOS_LOOP = 1.0
+
+def dibujar(puntos_control):
+    """
+    Dibuja la curva de Bézier y un punto animado sobre ella.
+    :param puntos_control: Lista de puntos de control para la curva de Bézier.
+    """
+    
+    glClearColor(0.0, 0.0, 0.0, 1.0)    # Limpia la pantalla
+    glClear(GL_COLOR_BUFFER_BIT)       # Si quitamos esta linea, veremos el rastro del punto
+
+    dibuja_ejes()
+    
+    # Dibujar curva de Bézier
+    glColor3f(1.0, 0.0, 0.0)  # Color rojo para la curva
+    
+    # Usamos GL_LINE_STRIP para conectar los puntos de la curva
+    glBegin(GL_LINE_STRIP)
+    for i in range(101):
+        # Calcular el punto en la curva de Bézier para t entre 0 y 1
+        t = i / 100.0
+        # Obtener las coordenadas del punto en la curva
+        x, y = bezier(t, puntos_control)
+        glVertex2f(x, y)
+    glEnd()
+    
+    # Dibujar los puntos de control
+    glColor3f(0.0, 0.0, 1.0)  # Color azul para los puntos de control
+    glPointSize(5)
+    glBegin(GL_POINTS)
+    for (px, py) in puntos_control:
+        glVertex2f(px, py)
+    glEnd()
+    
+    # Dibujamos un punto en la curva de Bézier
+    glColor3f(0.0, 1.0, 0.0)  # Color verde para el punto
+    t = (glfw.get_time() % SEGUNDOS_LOOP) / SEGUNDOS_LOOP  # Cicla cada 5 segundos
+    x, y = bezier(t, puntos_control)
+    glPointSize(10)
+    glBegin(GL_POINTS)
+    glVertex2f(x, y)
+    glEnd()
+    
+    pass
+
+if __name__ == "__main__":
+    ventana = iniciar_ventana()
+    
+    # Definir puntos de control para la curva de Bézier
+    # Tipica curva en S
+    puntos_control = [(-0.8, -0.8), (-0.4, 0.8), (0.4, -0.8), (0.8, 0.8)]
+
+    while not glfw.window_should_close(ventana):
+        dibujar(puntos_control)
+        glfw.swap_buffers(ventana)
+        glfw.poll_events()
+
+    glfw.terminate()
+
+
+""" Código 3:
+Curva B-spline en OpenGL usando Python y GLFW.
+Este script crea una ventana utilizando GLFW y dibuja una curva B-spline definida por puntos de control.
+Además, anima un punto que se mueve a lo largo de la curva.
+
+DIFERENCIA CON BÉZIER:
+- Bézier: La curva pasa por el primer y último punto de control
+- B-spline: La curva generalmente NO pasa por los puntos de control, solo se aproxima a ellos
+- B-spline: Tiene control local (modificar un punto afecta solo una región de la curva)
+"""
+import glfw
+from OpenGL.GL import *
+import math 
+from random import random
+
+def iniciar_ventana():
+    """
+    La funcion iniciar_ventana inicializa una ventana GLFW con dimensiones especificas y titulo 
+    :return: La funcion iniciar_ventana retorna la ventana GLFW como un objeto del tipo 'ventana'.
+    """
+    if not glfw.init():
+        raise Exception("No se pudo iniciar GLFW")
+    ventana = glfw.create_window(800, 600, "Curvas B-spline en OpenGL", None, None)
+    if not ventana:
+        glfw.terminate()
+        raise Exception("No se pudo crear la ventana")
+    glfw.make_context_current(ventana)
+    return ventana
+
+def funcion_base_bspline(i, k, t, nodos):
+    """
+    Calcula la función base B-spline de forma recursiva (algoritmo de Cox-de Boor).
+    
+    :param i: Índice del punto de control (cuál punto estamos evaluando)
+    :param k: Grado de la B-spline (1 = lineal, 2 = cuadrática, 3 = cúbica)
+    :param t: Parámetro entre 0 y 1 que indica la posición en la curva
+    :param nodos: Vector de nodos (knot vector) que define cómo se distribuye la curva
+    :return: Valor de la función base N_i,k(t)
+    """
+    # Caso base: función de grado 0 (función escalón)
+    # Si t está entre los nodos i e i+1, vale 1, sino vale 0
+    if k == 1:
+        if nodos[i] <= t < nodos[i + 1]:
+            return 1.0
+        else:
+            return 0.0
+    
+    # Caso recursivo: calculamos la función de grado k usando funciones de grado k-1
+    # Esta es la fórmula de Cox-de Boor
+    
+    # Primera parte de la fórmula
+    denominador1 = nodos[i + k - 1] - nodos[i]
+    if denominador1 != 0:
+        termino1 = ((t - nodos[i]) / denominador1) * funcion_base_bspline(i, k - 1, t, nodos)
+    else:
+        termino1 = 0
+    
+    # Segunda parte de la fórmula
+    denominador2 = nodos[i + k] - nodos[i + 1]
+    if denominador2 != 0:
+        termino2 = ((nodos[i + k] - t) / denominador2) * funcion_base_bspline(i + 1, k - 1, t, nodos)
+    else:
+        termino2 = 0
+    
+    return termino1 + termino2
+
+def bspline(t, puntos_control, grado, nodos):
+    """
+    Calcula un punto en una curva B-spline.
+    
+    :param t: Parámetro entre 0 y 1 que indica la posición en la curva
+    :param puntos_control: Lista de puntos de control [(x1,y1), (x2,y2), ...]
+    :param grado: Grado de la curva (1=lineal, 2=cuadrática, 3=cúbica)
+    :param nodos: Vector de nodos que controla la parametrización de la curva
+    :return: Punto (x, y) en la curva B-spline
+    """
+    n = len(puntos_control) - 1  # Índice del último punto de control
+    
+    # Ajustar t para que esté en el rango válido de los nodos
+    t_min = nodos[grado]
+    t_max = nodos[n + 1]
+    t_ajustado = t_min + t * (t_max - t_min)
+    
+    # Si t está en el límite superior, ajustarlo ligeramente
+    if t_ajustado >= t_max:
+        t_ajustado = t_max - 0.0001
+    
+    x = 0
+    y = 0
+    
+    # Sumar las contribuciones de cada punto de control
+    for i in range(n + 1):
+        # Calcular la función base B-spline para este punto de control
+        base = funcion_base_bspline(i, grado + 1, t_ajustado, nodos)
+        
+        # Añadir la contribución de este punto a las coordenadas finales
+        x += base * puntos_control[i][0]
+        y += base * puntos_control[i][1]
+    
+    return (x, y)
+
+def crear_vector_nodos_uniforme(num_puntos_control, grado):
+    """
+    Crea un vector de nodos uniforme para una B-spline.
+    
+    Un vector de nodos uniforme distribuye los valores de manera equidistante.
+    La longitud del vector es: num_puntos_control + grado + 1
+    
+    :param num_puntos_control: Número de puntos de control
+    :param grado: Grado de la curva
+    :return: Lista de valores de nodos
+    """
+    n = num_puntos_control - 1
+    m = n + grado + 1  # Número total de nodos
+    
+    nodos = []
+    for i in range(m + 1):
+        nodos.append(i)
+    
+    return nodos
+
+def dibuja_ejes():
+    """
+    Dibuja los ejes coordenados.
+    """
+    glBegin(GL_LINES)
+    glColor3f(0.3, 0.3, 0.4)  # Ejes en color gris
+    glVertex2f(-1.0, 0.0)
+    glVertex2f(1.0, 0.0)
+    glVertex2f(0.0, -1.0)
+    glVertex2f(0.0, 1.0)
+    glEnd()
+
+# Tiempo en segundos para completar un ciclo de animación
+SEGUNDOS_LOOP = 3.0
+
+def dibujar(puntos_control, grado, nodos):
+    """
+    Dibuja la curva B-spline y un punto animado sobre ella.
+    
+    :param puntos_control: Lista de puntos de control para la curva B-spline
+    :param grado: Grado de la curva
+    :param nodos: Vector de nodos
+    """
+    glClearColor(0.0, 0.0, 0.0, 1.0)  # Fondo negro
+    glClear(GL_COLOR_BUFFER_BIT)
+    
+    dibuja_ejes()
+    
+    # Dibujar la curva B-spline
+    glColor3f(1.0, 0.0, 0.0)  # Color rojo para la curva
+    glBegin(GL_LINE_STRIP)
+    for i in range(101):
+        t = i / 100.0
+        x, y = bspline(t, puntos_control, grado, nodos)
+        glVertex2f(x, y)
+    glEnd()
+    
+    # Dibujar los puntos de control
+    glColor3f(0.0, 0.0, 1.0)  # Color azul para los puntos de control
+    glPointSize(8)
+    glBegin(GL_POINTS)
+    for (px, py) in puntos_control:
+        glVertex2f(px, py)
+    glEnd()
+    
+    # Dibujar un punto animado en la curva B-spline
+    glColor3f(0.0, 1.0, 0.0)  # Color verde para el punto animado
+    t = (glfw.get_time() % SEGUNDOS_LOOP) / SEGUNDOS_LOOP
+    x, y = bspline(t, puntos_control, grado, nodos)
+    glPointSize(12)
+    glBegin(GL_POINTS)
+    glVertex2f(x, y)
+    glEnd()
+
+if __name__ == "__main__":
+    ventana = iniciar_ventana()
+    
+    # Definir puntos de control para la curva B-spline
+    # Nota: La curva NO pasa por estos puntos, solo se aproxima a ellos
+    puntos_control = [
+        (-0.8, -0.6),
+        (-0.4, 0.6),
+        (0.0, -0.4),
+        (0.4, 0.7),
+        (0.8, -0.5)
+    ]
+    
+    # Grado de la curva (3 = cúbica, la más común)
+    grado = 3
+    
+    # Crear vector de nodos uniforme
+    nodos = crear_vector_nodos_uniforme(len(puntos_control), grado)
+    
+    print(f"Número de puntos de control: {len(puntos_control)}")
+    print(f"Grado de la curva: {grado}")
+    print(f"Vector de nodos: {nodos}")
+    
+    while not glfw.window_should_close(ventana):
+        dibujar(puntos_control, grado, nodos)
+        glfw.swap_buffers(ventana)
+        glfw.poll_events()
+    
+    glfw.terminate()
+
+
+""" Código 4:
+Fractal de Mandelbrot en OpenGL usando Python y GLFW.
+Este script crea una ventana utilizando GLFW y dibuja el conjunto de Mandelbrot.
+El conjunto de Mandelbrot es un fractal definido por una fórmula matemática iterativa simple.
+
+- Para cada píxel de la pantalla, asociamos un número complejo c = x + yi
+- Iteramos: z₀ = 0, z₁ = z₀² + c, z₂ = z₁² + c, ...
+- Si después de muchas iteraciones |z| no crece demasiado, el punto está en el conjunto
+- Coloreamos según cuántas iteraciones tardó en "escapar" (divergir)
+"""
+
+import glfw
+from OpenGL.GL import *
+import math
+
+def iniciar_ventana():
+    """
+    Inicializa una ventana GLFW con dimensiones específicas y título.
+    :return: La ventana GLFW como un objeto del tipo 'ventana'.
+    """
+    if not glfw.init():
+        raise Exception("No se pudo iniciar GLFW")
+    ventana = glfw.create_window(800, 800, "Fractal de Mandelbrot en OpenGL", None, None)
+    if not ventana:
+        glfw.terminate()
+        raise Exception("No se pudo crear la ventana")
+    glfw.make_context_current(ventana)
+    return ventana
+
+def mandelbrot(c, max_iter):
+    """
+    Calcula si un número complejo c pertenece al conjunto de Mandelbrot.
+    
+    :param c: Número complejo (c = x + yi) que queremos evaluar
+    :param max_iter: Número máximo de iteraciones antes de considerar que está en el conjunto
+    :return: Número de iteraciones antes de diverger (o max_iter si no diverge)
+    
+    ALGORITMO:
+    1. Empezamos con z = 0
+    2. Repetimos: z = z² + c
+    3. Si |z| > 2, sabemos que divergirá al infinito (sale del conjunto)
+    4. Contamos cuántas iteraciones tardó en escapar
+    """
+    z = 0
+    for n in range(max_iter):
+        if abs(z) > 2:
+            # El punto escapó, no está en el conjunto
+            return n
+        z = z * z + c
+    
+    # Llegamos al máximo de iteraciones sin escapar
+    # Este punto probablemente está en el conjunto de Mandelbrot
+    return max_iter
+
+def generar_color(iteraciones, max_iter):
+    """
+    Genera un color RGB basado en el número de iteraciones.
+    
+    :param iteraciones: Número de iteraciones antes de diverger
+    :param max_iter: Número máximo de iteraciones
+    :return: Tupla (r, g, b) con valores entre 0 y 1
+    
+    ESQUEMA DE COLORES:
+    - Negro: Puntos que están en el conjunto (no divergieron)
+    - Colores: Puntos que escaparon, coloreados según qué tan rápido
+    """
+    if iteraciones == max_iter:
+        # Está en el conjunto de Mandelbrot - negro
+        r = 0.0
+        g = 0.0
+        b = 0.0
+        return (r, g, b)
+    
+    # Normalizar el número de iteraciones a un valor entre 0 y 1
+    t = iteraciones / max_iter
+    
+    # Crear un degradado de colores interesante
+    # Usamos funciones seno para crear transiciones suaves de color
+    angulo_r = 3.0 + t * 10.0
+    seno_r = math.sin(angulo_r)
+    r = 0.5 + 0.5 * seno_r
+    
+    angulo_g = 3.0 + t * 10.0 + 2.0
+    seno_g = math.sin(angulo_g)
+    g = 0.5 + 0.5 * seno_g
+    
+    angulo_b = 3.0 + t * 10.0 + 4.0
+    seno_b = math.sin(angulo_b)
+    b = 0.5 + 0.5 * seno_b
+    
+    return (r, g, b)
+
+def calcular_mandelbrot(ancho, alto, x_min, x_max, y_min, y_max, max_iter):
+    """
+    Calcula el conjunto de Mandelbrot para una región específica del plano complejo.
+    
+    :param ancho: Ancho en píxeles de la imagen
+    :param alto: Alto en píxeles de la imagen
+    :param x_min, x_max: Rango del eje real (parte real de c)
+    :param y_min, y_max: Rango del eje imaginario (parte imaginaria de c)
+    :param max_iter: Máximo número de iteraciones
+    :return: Lista 2D con el número de iteraciones para cada píxel
+    """
+    # Crear una lista vacía para la imagen
+    imagen = []
+    
+    # Crear las filas
+    for i in range(alto):
+        # Crear una fila vacía
+        fila = []
+        
+        # Llenar la fila con los valores
+        for j in range(ancho):
+            fila.append(0)
+        
+        # Agregar la fila a la imagen
+        imagen.append(fila)
+    
+    # Ahora calcular el fractal para cada píxel
+    for i in range(alto):
+        for j in range(ancho):
+            # Mapear coordenadas de píxel a coordenadas complejas
+            # x es la parte real, y es la parte imaginaria
+            rango_x = x_max - x_min
+            proporcion_x = j / ancho
+            x = x_min + rango_x * proporcion_x
+            
+            rango_y = y_max - y_min
+            proporcion_y = i / alto
+            y = y_min + rango_y * proporcion_y
+            
+            # Crear el número complejo c = x + yi
+            c = complex(x, y)
+            
+            # Calcular cuántas iteraciones tarda en escapar
+            num_iteraciones = mandelbrot(c, max_iter)
+            imagen[i][j] = num_iteraciones
+    
+    return imagen
+
+def dibujar(imagen_mandelbrot, ancho, alto, max_iter, mostrar_ejes):
+    """
+    Dibuja el conjunto de Mandelbrot en la ventana.
+    
+    :param imagen_mandelbrot: Lista 2D con las iteraciones para cada píxel
+    :param ancho: Ancho de la imagen
+    :param alto: Alto de la imagen
+    :param max_iter: Máximo número de iteraciones usado
+    :param mostrar_ejes: Si se deben mostrar los ejes coordenados
+    """
+    # Limpiar la pantalla con color negro
+    glClearColor(0.0, 0.0, 0.0, 1.0)
+    glClear(GL_COLOR_BUFFER_BIT)
+    
+    # Dibujar cada píxel del fractal
+    glBegin(GL_POINTS)
+    
+    for i in range(alto):
+        for j in range(ancho):
+            # Obtener el número de iteraciones para este píxel
+            iteraciones = imagen_mandelbrot[i][j]
+            
+            # Generar el color según las iteraciones
+            color = generar_color(iteraciones, max_iter)
+            r = color[0]
+            g = color[1]
+            b = color[2]
+            glColor3f(r, g, b)
+            
+            # Mapear coordenadas de píxel a coordenadas OpenGL (-1 a 1)
+            proporcion_x = j / ancho
+            x = -1.0 + 2.0 * proporcion_x
+            
+            proporcion_y = i / alto
+            y = 1.0 - 2.0 * proporcion_y  # Invertir Y porque OpenGL tiene Y hacia arriba
+            
+            glVertex2f(x, y)
+    
+    glEnd()
+
+if __name__ == "__main__":
+    ventana = iniciar_ventana()
+    
+    # Parámetros de la visualización
+    ANCHO = 400  # Reducimos para que sea más rápido
+    ALTO = 400
+    MAX_ITERACIONES = 100  # Más iteraciones = más detalle pero más lento
+    
+    # Región del plano complejo a visualizar
+    # La región clásica del Mandelbrot está aproximadamente en:
+    # Parte real: -2.5 a 1.0
+    # Parte imaginaria: -1.5 a 1.5
+    X_MIN = -2.5
+    X_MAX = 1.0
+    Y_MIN = -1.5
+    Y_MAX = 1.5
+    
+    # PRECALCULAR EL CONJUNTO DE MANDELBROT
+    # Importante hacer esto fuera del loop principal para no recalcular cada frame (se laguearía horriblemente)
+    imagen = calcular_mandelbrot(ANCHO, ALTO, X_MIN, X_MAX, Y_MIN, Y_MAX, MAX_ITERACIONES)
+    
+    while not glfw.window_should_close(ventana):
+        dibujar(imagen, ANCHO, ALTO, MAX_ITERACIONES, mostrar_ejes)
+        glfw.swap_buffers(ventana)
+        glfw.poll_events()
+    
+    glfw.terminate()
+
+
+""" Código 5:
+Fractal de Julia en OpenGL usando Python y GLFW.
+Este script crea una ventana utilizando GLFW y dibuja el conjunto de Julia.
+El conjunto de Julia es un fractal similar al de Mandelbrot pero con una diferencia clave.
+
+DIFERENCIA ENTRE MANDELBROT Y JULIA:
+- Mandelbrot: Para cada píxel, c cambia (es la posición del píxel), z empieza en 0
+             Iteramos: z = z² + c
+             
+- Julia: c es una CONSTANTE fija para toda la imagen, z empieza en la posición del píxel
+         Iteramos: z = z² + c (donde c es el mismo para todos los píxeles)
+         
+En resumen: Julia es como "invertir" la fórmula de Mandelbrot
+"""
+
+import glfw
+from OpenGL.GL import *
+import math
+
+def iniciar_ventana():
+    """
+    Inicializa una ventana GLFW con dimensiones específicas y título.
+    :return: La ventana GLFW como un objeto del tipo 'ventana'.
+    """
+    if not glfw.init():
+        raise Exception("No se pudo iniciar GLFW")
+    ventana = glfw.create_window(800, 800, "Fractal de Julia en OpenGL", None, None)
+    if not ventana:
+        glfw.terminate()
+        raise Exception("No se pudo crear la ventana")
+    glfw.make_context_current(ventana)
+    return ventana
+
+def julia(z, c, max_iter):
+    """
+    Calcula si un número complejo z pertenece al conjunto de Julia para un c dado.
+    
+    :param z: Número complejo inicial (z = x + yi) - la posición del píxel
+    :param c: Número complejo constante que define el conjunto de Julia
+    :param max_iter: Número máximo de iteraciones
+    :return: Número de iteraciones antes de diverger (o max_iter si no diverge)
+    
+    ALGORITMO:
+    1. Empezamos con z = posición del píxel (no en 0 como Mandelbrot)
+    2. c es una CONSTANTE que no cambia
+    3. Repetimos: z = z² + c
+    4. Si |z| > 2, sabemos que divergirá al infinito
+    5. Contamos cuántas iteraciones tardó en escapar
+    """
+    for n in range(max_iter):
+        if abs(z) > 2:
+            # El punto escapó, no está en el conjunto
+            return n
+        z = z * z + c
+    
+    # Llegamos al máximo de iteraciones sin escapar
+    # Este punto probablemente está en el conjunto de Julia
+    return max_iter
+
+def generar_color(iteraciones, max_iter):
+    """
+    Genera un color RGB basado en el número de iteraciones.
+    
+    :param iteraciones: Número de iteraciones antes de diverger
+    :param max_iter: Número máximo de iteraciones
+    :return: Tupla (r, g, b) con valores entre 0 y 1
+    
+    ESQUEMA DE COLORES:
+    - Negro: Puntos que están en el conjunto (no divergieron)
+    - Colores: Puntos que escaparon, coloreados según qué tan rápido
+    """
+    if iteraciones == max_iter:
+        # Está en el conjunto de Julia - negro
+        r = 0.0
+        g = 0.0
+        b = 0.0
+        return (r, g, b)
+    
+    # Normalizar el número de iteraciones a un valor entre 0 y 1
+    t = iteraciones / max_iter
+    
+    # Crear un degradado de colores interesante
+    # Usamos funciones seno para crear transiciones suaves de color
+    angulo_r = 3.0 + t * 10.0
+    seno_r = math.sin(angulo_r)
+    r = 0.5 + 0.5 * seno_r
+    
+    angulo_g = 3.0 + t * 10.0 + 2.0
+    seno_g = math.sin(angulo_g)
+    g = 0.5 + 0.5 * seno_g
+    
+    angulo_b = 3.0 + t * 10.0 + 4.0
+    seno_b = math.sin(angulo_b)
+    b = 0.5 + 0.5 * seno_b
+    
+    return (r, g, b)
+
+def calcular_julia(ancho, alto, x_min, x_max, y_min, y_max, c, max_iter):
+    """
+    Calcula el conjunto de Julia para una región específica del plano complejo.
+    
+    :param ancho: Ancho en píxeles de la imagen
+    :param alto: Alto en píxeles de la imagen
+    :param x_min, x_max: Rango del eje real (parte real de z)
+    :param y_min, y_max: Rango del eje imaginario (parte imaginaria de z)
+    :param c: Número complejo constante que define el conjunto de Julia
+    :param max_iter: Máximo número de iteraciones
+    :return: Lista 2D con el número de iteraciones para cada píxel
+    """
+    # Crear una lista vacía para la imagen
+    imagen = []
+    
+    # Crear las filas
+    for i in range(alto):
+        # Crear una fila vacía
+        fila = []
+        
+        # Llenar la fila con los valores
+        for j in range(ancho):
+            fila.append(0)
+        
+        # Agregar la fila a la imagen
+        imagen.append(fila)
+    
+    # Ahora calcular el fractal para cada píxel
+    for i in range(alto):
+        for j in range(ancho):
+            # Mapear coordenadas de píxel a coordenadas complejas
+            # x es la parte real, y es la parte imaginaria
+            rango_x = x_max - x_min
+            proporcion_x = j / ancho
+            x = x_min + rango_x * proporcion_x
+            
+            rango_y = y_max - y_min
+            proporcion_y = i / alto
+            y = y_min + rango_y * proporcion_y
+            
+            # Crear el número complejo z = x + yi (la posición del píxel)
+            z = complex(x, y)
+            
+            # Calcular cuántas iteraciones tarda en escapar
+            # Nota: c es constante para toda la imagen
+            num_iteraciones = julia(z, c, max_iter)
+            imagen[i][j] = num_iteraciones
+    
+    return imagen
+
+def dibujar(imagen_julia, ancho, alto, max_iter, mostrar_ejes):
+    """
+    Dibuja el conjunto de Julia en la ventana.
+    
+    :param imagen_julia: Lista 2D con las iteraciones para cada píxel
+    :param ancho: Ancho de la imagen
+    :param alto: Alto de la imagen
+    :param max_iter: Máximo número de iteraciones usado
+    :param mostrar_ejes: Si se deben mostrar los ejes coordenados
+    """
+    # Limpiar la pantalla con color negro
+    glClearColor(0.0, 0.0, 0.0, 1.0)
+    glClear(GL_COLOR_BUFFER_BIT)
+    
+    # Dibujar cada píxel del fractal
+    glBegin(GL_POINTS)
+    
+    for i in range(alto):
+        for j in range(ancho):
+            # Obtener el número de iteraciones para este píxel
+            iteraciones = imagen_julia[i][j]
+            
+            # Generar el color según las iteraciones
+            color = generar_color(iteraciones, max_iter)
+            r = color[0]
+            g = color[1]
+            b = color[2]
+            glColor3f(r, g, b)
+            
+            # Mapear coordenadas de píxel a coordenadas OpenGL (-1 a 1)
+            proporcion_x = j / ancho
+            x = -1.0 + 2.0 * proporcion_x
+            
+            proporcion_y = i / alto
+            y = 1.0 - 2.0 * proporcion_y  # Invertir Y porque OpenGL tiene Y hacia arriba
+            
+            glVertex2f(x, y)
+    
+    glEnd()
+
+if __name__ == "__main__":
+    ventana = iniciar_ventana()
+    
+    # Parámetros de la visualización
+    ANCHO = 400  # Reducimos para que sea más rápido
+    ALTO = 400
+    MAX_ITERACIONES = 100  # Más iteraciones = más detalle pero más lento
+    
+    # Región del plano complejo a visualizar
+    # Para Julia típicamente usamos una región centrada en el origen
+    X_MIN = -2.0
+    X_MAX = 2.0
+    Y_MIN = -2.0
+    Y_MAX = 2.0
+    
+    # CONSTANTE C que define el conjunto de Julia
+    # Diferentes valores de c producen diferentes fractales de Julia
+    # Estos son algunos valores interesantes para probar:
+    
+    # Opción 1: Un clásico que parece un dragón
+    c_real = -0.7
+    c_imaginario = 0.27015
+    
+    # Opción 2: Parece un remolino
+    # c_real = -0.4
+    # c_imaginario = 0.6
+    
+    # Opción 3: Parece un conejito
+    # c_real = -0.8
+    # c_imaginario = 0.156
+    
+    # Opción 4: Forma de espiral
+    # c_real = 0.285
+    # c_imaginario = 0.01
+    
+    # Crear el número complejo c
+    C = complex(c_real, c_imaginario)
+    
+    # PRECALCULAR EL CONJUNTO DE JULIA
+    # Importante hacer esto fuera del loop principal para no recalcular cada frame
+    imagen = calcular_julia(ANCHO, ALTO, X_MIN, X_MAX, Y_MIN, Y_MAX, C, MAX_ITERACIONES)
+    
+    # Loop principal de renderizado
+    mostrar_ejes = False
+    
+    while not glfw.window_should_close(ventana):
+        dibujar(imagen, ANCHO, ALTO, MAX_ITERACIONES, mostrar_ejes)
+        glfw.swap_buffers(ventana)
+        glfw.poll_events()
+    
+    glfw.terminate()
+

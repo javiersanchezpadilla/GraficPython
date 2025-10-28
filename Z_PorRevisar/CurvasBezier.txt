@@ -1,0 +1,169 @@
+# Dibujo de líneas curvas
+# Programa 1: Curva de Bézier
+# Hay que instalar numpy y matplotlib primero: pip install numpy matplotlib
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# --- Puntos de Control ---
+# Una curva cúbica necesita 4 puntos (P0, P1, P2, P3)
+# Vamos a definirlos como listas [x, y]
+P0 = [0, 0]  # Punto de inicio
+P1 = [2, 8]  # Punto de control 1 (jala la curva)
+P2 = [7, 2]  # Punto de control 2 (jala la curva)
+P3 = [9, 9]  # Punto final
+
+# --- Calcular la Curva ---
+
+# Necesitamos una lista para guardar todos los puntitos [x, y] que van a
+# formar la línea de la curva.
+puntos_de_la_curva = []
+
+# 't' es un valor que va de 0 a 1.
+# Vamos a calcular 100 puntos para que la curva se vea suave.
+# np.linspace(inicio, fin, cantidad_de_pasos)
+pasos = 100
+for t in np.linspace(0, 1, pasos):
+    
+    # Esta es la fórmula:
+    # P(t) = (1-t)^3 * P0 + 3*(1-t)^2 * t * P1 + 3*(1-t) * t^2 * P2 + t^3 * P3
+    
+    # Vamos a calcular cada parte por separado.
+    omt = 1 - t  # Esto es (1-t)
+    
+    # Estos son los polinomios de Bernstein.
+    b0 = omt**3
+    b1 = 3 * (omt**2) * t
+    b2 = 3 * omt * (t**2)
+    b3 = t**3
+    
+    # Ahora, hay que aplicar la fórmula para la coordenada X y la Y
+    # (El P0[0] es la 'x' del P0, P0[1] es la 'y' del P0, y así)
+    
+    # Cálculo para X
+    x = (b0 * P0[0]) + (b1 * P1[0]) + (b2 * P2[0]) + (b3 * P3[0])
+    
+    # Cálculo para Y
+    y = (b0 * P0[1]) + (b1 * P1[1]) + (b2 * P2[1]) + (b3 * P3[1])
+    
+    # Añado el nuevo punto [x, y] a mi lista
+    puntos_de_la_curva.append([x, y])
+
+# --- Dibujar todo con Matplotlib ---
+
+# Matplotlib prefiere los arrays de numpy en lugar de listas
+# Convierto mi lista de puntos a un array de numpy
+curva_np = np.array(puntos_de_la_curva)
+
+# También convierto los puntos de control para dibujarlos
+puntos_control_np = np.array([P0, P1, P2, P3])
+
+# Saco todas las 'x' de la curva (columna 0)
+x_curva = curva_np[:, 0]
+# Saco todas las 'y' de la curva (columna 1)
+y_curva = curva_np[:, 1]
+
+# Saco las 'x' de los puntos de control
+x_control = puntos_control_np[:, 0]
+# Saco las 'y' de los puntos de control
+y_control = puntos_control_np[:, 1]
+
+
+# Empezar a dibujar
+plt.figure(figsize=(8, 6))
+
+# 1. Dibujo la curva (línea azul 'b-')
+plt.plot(x_curva, y_curva, 'b-', label="Curva de Bézier")
+
+# 2. Dibujo el polígono de control (línea roja punteada 'ro--')
+plt.plot(x_control, y_control, 'ro--', label="Polígono de Control")
+
+# 3. Dibujo los puntos de control (bolitas rojas 'o')
+plt.scatter(x_control, y_control, color='red', s=100, label="Puntos P0, P1, P2, P3")
+
+# Ponerle títulos y etiquetas
+plt.title("Curva de Bézier en Python")
+plt.xlabel("Eje X")
+plt.ylabel("Eje Y")
+plt.legend() # Para que muestre las etiquetas (label)
+plt.grid(True) # Una cuadrícula se ve bien
+plt.axis('equal') # Para que los ejes se vean parejos
+
+# Mostrar el dibujo
+plt.show()
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Dibujo de líneas de curvas
+# Programa 2: Curva B-spline
+# Para esta, useramos 'scipy' porque la fórmula es muy difícil.
+# Hay que instalarla: pip install scipy
+
+import numpy as np
+import matplotlib.pyplot as plt
+# De scipy, importamos estas dos funciones.
+from scipy.interpolate import splev, splprep
+
+# --- Puntos de Control ---
+# Las B-spline pueden tener más de 4 puntos.
+# Voy a ponerlos en un array de numpy de una vez
+puntos_control_np = np.array([
+    [0, 0],
+    [1, 5],
+    [3, 3],
+    [5, 6],
+    [7, 2],
+    [8, 4],
+    [10, 1]
+])
+
+# Separamos las 'x' (columna 0) y las 'y' (columna 1)
+x_control = puntos_control_np[:, 0]
+y_control = puntos_control_np[:, 1]
+
+# --- Magia de Scipy (B-spline) ---
+
+# 1. Preparar la curva
+# Esta función 'splprep' (preparación de spline) es la que hace todo el trabajo.
+# Hay que pasarle las 'x' y las 'y' en una lista, así: [lista_x, lista_y]
+# k=3 significa que es 'cúbica' (como la de Bézier)
+# s=2.0 es el "suavizado". Si s=0, la curva trata de pasar por todos los puntos.
+# Si 's' es mayor, la curva se "relaja" y solo se acerca. Vamos a probar con 2.
+
+# La función devuelve 'tck' (que es como la "receta" de la curva)
+# y 'u' (que son los valores 't' originales de los puntos)
+tck, u = splprep([x_control, y_control], k=3, s=2.0)
+
+
+# 2. Evaluar (dibujar) la curva
+# Ahora, creamos 100 puntos nuevos entre el inicio (u.min()) y el fin (u.max())
+# para que la curva se dibuje suave
+u_nuevos = np.linspace(u.min(), u.max(), 100)
+
+# 'splev' (evaluación de spline) usa la "receta" (tck) y los 100 puntos nuevos (u_nuevos)
+# y nos da las nuevas 'x' e 'y' de la curva
+x_curva, y_curva = splev(u_nuevos, tck)
+
+
+# --- Dibujar todo con Matplotlib ---
+
+plt.figure(figsize=(8, 6))
+
+# 1. Dibujar la curva B-spline (línea azul 'b-')
+plt.plot(x_curva, y_curva, 'b-', label="Curva B-spline (hecha con Scipy)")
+
+# 2. Dibujar el polígono de control (línea roja punteada 'ro--')
+plt.plot(x_control, y_control, 'ro--', label="Polígono de Control")
+
+# 3. Dibujar los puntos de control (bolitas rojas 'o')
+plt.scatter(x_control, y_control, color='red', s=100, label="Puntos de Control")
+
+# Ponerle títulos y etiquetas
+plt.title("Curva B-spline en Python")
+plt.xlabel("Eje X")
+plt.ylabel("Eje Y")
+plt.legend()
+plt.grid(True)
+plt.axis('equal')
+
+# ¡Mostrar el dibujo!
+plt.show()
