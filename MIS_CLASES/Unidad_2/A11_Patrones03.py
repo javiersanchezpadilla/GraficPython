@@ -1,4 +1,11 @@
-""" En este ejercicio controlaremos la velocidad de los patrones"""
+""" En este ejercicio controlaremos la velocidad de los patrones
+
+    Aquí se define una clase para manejar múltiples objetos de mapa de bits
+    cada uno con su propia velocidad y patrón de animación.
+    Se anima la velocidad de cada patron en el eje "x", así como la velocidad
+    de la mordida del packman.
+
+"""
 
 import glfw
 from OpenGL.GL import *
@@ -7,17 +14,17 @@ import random as rn
 import time
 
 # Definición de los patrones para simular el movimiento
-packman01 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,           
+packman01 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,
 0x00, 0xff, 0xfe, 0x00, 0x03, 0xff, 0xfc, 0x00, 0x07, 0xff, 0xfc, 0x00,
 0x0f, 0xff, 0xf8, 0x00, 0x1f, 0xff, 0xf8, 0x00, 0x3f, 0xff, 0xf0, 0x00,
-0x3f, 0xff, 0xf0, 0x00, 0x7f, 0xff, 0xf0, 0x00, 0x7f, 0xff, 0xe0, 0x00,        
+0x3f, 0xff, 0xf0, 0x00, 0x7f, 0xff, 0xf0, 0x00, 0x7f, 0xff, 0xe0, 0x00,
 0x7f, 0xff, 0xc0, 0x00, 0xff, 0xff, 0xc0, 0x00, 0xff, 0xff, 0x80, 0x00,
 0xff, 0xff, 0x80, 0x00, 0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00,
 0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0xc0, 0x00, 0xff, 0xff, 0xe0, 0x00,
 0x7f, 0xf1, 0xe0, 0x00, 0x7f, 0xe0, 0xf0, 0x00, 0x7f, 0xe0, 0xf8, 0x00,
 0x3f, 0xe0, 0xfc, 0x00, 0x3f, 0xf1, 0xfc, 0x00, 0x1f, 0xff, 0xfe, 0x00,
 0x0f, 0xff, 0xff, 0x00, 0x07, 0xff, 0xff, 0x80, 0x03, 0xff, 0xff, 0x80,
-0x01, 0xff, 0xff, 0x80, 0x00, 0x7f, 0xfe, 0x00, 0x00, 0x0f, 0xe0, 0x00], dtype=np.ubyte)   
+0x01, 0xff, 0xff, 0x80, 0x00, 0x7f, 0xfe, 0x00, 0x00, 0x0f, 0xe0, 0x00], dtype=np.ubyte)
 
 packman02 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,
 0x00, 0xff, 0xff, 0x00, 0x03, 0xff, 0xff, 0xc0, 0x07, 0xff, 0xff, 0xe0,
@@ -58,47 +65,6 @@ packman04 = np.array([0x00, 0x0f, 0xf0, 0x00, 0x00, 0x7f, 0xfe, 0x00,
 
 
 que_packman = [packman01, packman02, packman03, packman04, packman03, packman02]
-que_patron = 0
-pos_x = 2
-pos_y = 30
-inc_x = 0
-inc_y = 0
-
-
-class MapaBitsDelPackman:
-    def __init__(self, x, y, vel, inter, lista_mapas):
-        self.pos_x = x
-        self.pos_y = y
-        self.velocidad = vel
-        self.intervalo = inter # Se movera cada intervalo de fotogramas
-        self.figura = lista_mapas
-        self.que_figura = 0
-        self.contador_ciclos = 0
-        self.rojo = rn.random()
-        self.verde = rn.random()
-        self.azul = rn.random()
-        
-    def dibujar(self):
-        glColor3f(self.rojo, self.verde, self.azul)
-        glRasterPos2i(self.pos_x, self.pos_y)
-        glBitmap(32, 32, 0.0, 0.0, 0.0, 0.0, self.figura[self.que_figura]);
-
-    def actualizar(self):
-        # Cada figura se mueve a SU propia velocidad
-        self.contador_ciclos += 1
-        if self.contador_ciclos >= self.intervalo:
-            self.contador_ciclos = 0
-            self.pos_x += self.velocidad
-        # Ajustamos los valores de acuerdo a la pantalla
-        if self.pos_x >= 500:
-            self.pos_x = -5
-
-        self.dibujar()
-        self.que_figura += 1
-        if self.que_figura >= 6:
-            self.que_figura = 0
-        # print("contador ciclo", self.contador_ciclos, )
-           
 
 
 def iniciar_ventana():
@@ -112,7 +78,6 @@ def iniciar_ventana():
     return ventana
 
 
-
 def configurar_coordenadas_ventana(ancho, alto):
     """Configura la proyección para usar coordenadas de píxeles (ventana)."""
     glMatrixMode(GL_PROJECTION)
@@ -122,8 +87,51 @@ def configurar_coordenadas_ventana(ancho, alto):
     glOrtho(0.0, ancho, 0.0, alto, -1.0, 1.0)
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    # Nota: glRasterPos2i() funciona en coordenadas de ventana, 
+    # Nota: glRasterPos2i() funciona en coordenadas de ventana,
     # por lo que es esencial configurar la proyección a coordenadas de ventana.
+
+
+
+class MapaBitsDelPackman:
+    def __init__(self, x, y, ciclos_velocidad, velocidad, ciclos_figura, lista_mapas):
+        self.pos_x = x
+        self.pos_y = y
+        self.figura = lista_mapas
+        self.ciclos_velocidad = ciclos_velocidad    # Se movera en "x" cada ciertos ciclos
+        self.velocidad = velocidad                  # Velocidad de movimiento en "x"
+        self.ciclos_figura = ciclos_figura          # Cambiara la figura cada ciertos ciclos
+        self.contador_ciclos_velocidad = 0          # Contador de ciclos para la velocidad
+        self.contador_ciclos_figura = 0             # Contador de ciclos para la figura
+        self.que_figura = 0                         # Indice de la figura actual
+        self.rojo = rn.random()                     # Colores aleatorios para cada packman
+        self.verde = rn.random()
+        self.azul = rn.random()
+
+    def dibujar(self):
+        glColor3f(self.rojo, self.verde, self.azul)
+        glRasterPos2i(self.pos_x, self.pos_y)
+        glBitmap(32, 32, 0.0, 0.0, 0.0, 0.0, self.figura[self.que_figura]);
+
+    def actualizar(self):
+        self.contador_ciclos_velocidad += 1         # Contador de ciclos para la velocidad
+        self.contador_ciclos_figura += 1            # Contador de ciclos para cargar la figura
+
+        # Actualizamos el desplazamiento en "x" según su velocidad (cuenta los frames)
+        if self.contador_ciclos_velocidad >= self.ciclos_velocidad:
+            self.contador_ciclos_velocidad = 0
+            self.pos_x += self.velocidad
+            # Ajustamos los valores de acuerdo a la pantalla
+            if self.pos_x >= 500:
+                self.pos_x = -5
+
+        # Actualizamos la figura según su velocidad (cuenta los frames)
+        if self.contador_ciclos_figura >= self.ciclos_figura:
+            self.contador_ciclos_figura = 0
+            self.que_figura += 1
+            if self.que_figura >= 6:
+                self.que_figura = 0
+
+        self.dibujar()
 
 
 
@@ -134,11 +142,13 @@ if __name__ == "__main__":
     configurar_coordenadas_ventana(500 , 500)
     glClearColor(0.0, 0.0, 0.2, 1.0) # Fondo azul oscuro
 
-    p01 = MapaBitsDelPackman(1, 10, 1, 2, que_packman)
-    p02 = MapaBitsDelPackman(1, 110, 2, 2, que_packman)    
-    p03 = MapaBitsDelPackman(1, 210, 4, 2, que_packman)
-    p04 = MapaBitsDelPackman(1, 310, 8, 2, que_packman)
-    p05 = MapaBitsDelPackman(1, 410, 10, 2, que_packman)
+                          # (x, y, ciclos_velocidad, velocidad, ciclos_figura, lista_mapas):
+    p01 = MapaBitsDelPackman(1, 10, 1, 1, 5, que_packman)
+    p02 = MapaBitsDelPackman(1, 110, 3, 5, 1, que_packman)
+    p03 = MapaBitsDelPackman(1, 210, 6, 10, 10, que_packman)
+    p04 = MapaBitsDelPackman(1, 310, 9, 2, 20, que_packman)
+    p05 = MapaBitsDelPackman(1, 410, 12, 4, 7, que_packman)
+
     lista_packmans = [p01, p02, p03, p04, p05]
 
     ciclo = 0
@@ -146,14 +156,14 @@ if __name__ == "__main__":
     while not glfw.window_should_close(ventana):
         glClear(GL_COLOR_BUFFER_BIT)
 
-        # Llama a la función de dibujo de mapa de bits
-        lista_packmans[ciclo].actualizar()
+        # Actualizar y dibujar uno a uno cada packman en la lista
+        for packman in lista_packmans:
+            packman.actualizar()
+
         ciclo += 1
-        if ciclo > (len(lista_packmans) - 1):       # PAra navegar dentro de la lista de objetos
+        if ciclo > (len(lista_packmans) - 1):       # Para navegar dentro de la lista de objetos
             ciclo = 0
-        # time.sleep(0.5)
+
         glfw.swap_buffers(ventana)
         glfw.poll_events()
-    
     glfw.terminate()
-    

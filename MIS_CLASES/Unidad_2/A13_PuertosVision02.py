@@ -8,9 +8,9 @@
                     (El valor inicial es (0, 0))
     Ancho, Alto     Especifica el ancho y el alto del puerto de vision. Cuando un contexto GL 
                     se adjunta por primera vez a una ventana, el ancho y el alto se establecen 
-                    según las dimensiones de esa ventana.
+                    según las dimensiones de esa ventana (pero en PIXELES).
 
-    Las ubicaciones en la ventana y los tamaños de cada ventana son en pixeles (ignora la escala),
+    Las ubicaciones en la ventana y los tamaños de cada ventana son en PIXELES (ignora la escala),
     la escala la considera para manejo interno de las representaciones graficas dentro de la misma
     ventana.
 
@@ -21,19 +21,36 @@
                     (0, 600)   +----------------+----------------+ (600, 600)
                                |                |                |
                                |                |                |
-                               |                |                |
-                               |                |                |
-    glViewport(0,300,300,300)  |                | (300,300)      | glViewport(300,300,300,300)
+                               |                |                |             *** glViewport(300,300,300,300)
+                               |                |  ***           |
+    glViewport(0,300,300,300)  |                | (300,300)      | 
                       (0, 300) +----------------+----------------+ (600, 300)
 				               |                |                |
                                |                |                |
 				               |                |                |
 				               |                |                |
-    glViewport(0,0,300,300)	   |                |                | glViewport(300,0,300,300)
+    glViewport(0,0,300,300)	   |                |                | 
 			            (0, 0) +----------------+----------------+ (600, 0)
-                                                 (300, 0)               
+                                                (300, 0)          
+                                                glViewport(300,0,300,300)     
 
-En el ejemplo mostrado arriba cada puerto de visión fue creado de 300x300 pixeles.
+    En el ejemplo mostrado arriba cada puerto de visión fue creado de 300x300 pixeles.
+
+    Ejemplo de uso de los puertos de visión en OpenGL con Python y GLFW: 
+
+    El primer puerto de visión se crea en la esquina inferior izquierda: glViewport(0,0,300,300)
+    el segundo puerto de visión en la esquina inferior derecha:          glViewport(300,0,300,300)
+    el tercer puerto de visión en la esquina superior izquierda:         glViewport(0,300,300,300)
+    el cuarto puerto de visión en la esquina superior derecha.           glViewport(300,300,300,300)
+
+    Ejemplo de como se interpreta la definición de uno de los puertos de visión:
+
+        glViewport(300,0,300,300)       (posición_x, posición_y, ancho_en_pixeles, alto_en_pixeles)
+    
+    Significa que el puerto de visión empieza en la posición (300,0) de la ventana principal
+    y tendrá un tamaño de 300 pixeles de ancho por 300 pixeles de alto
+
+    Podmeos cambiar el orden de creación de los puertos de visión para ver como afecta al resultado final.
 """
 
 import glfw
@@ -71,7 +88,7 @@ def framebuffer_size_callback(window, width, height):
 
 def dibujar():
 
-    glViewport(0, 300, 300, 300)
+    glViewport(0, 0, 300, 300)
     glColor3f(1.0, 0.0, 0.0)
     glBegin(GL_QUADS)
     glVertex3i(-5,-5, 0)
@@ -80,7 +97,7 @@ def dibujar():
     glVertex3i( 5,-5, 0)
     glEnd()
     
-    glViewport(300, 300, 300, 300)
+    glViewport(300, 0, 300, 300)
     glColor3f(0.0, 1.0, 0.0)
     glBegin(GL_TRIANGLES)
     glVertex3i(-5,-5, 0)
@@ -88,7 +105,7 @@ def dibujar():
     glVertex3i( 5,-5, 0)
     glEnd()
     
-    glViewport(0, 0, 300, 300)
+    glViewport(0, 300, 300, 300)
     glColor3f(0.0, 0.0, 1.0)
     glBegin(GL_POLYGON)
     glVertex3i(-5, 0, 0)
@@ -97,7 +114,7 @@ def dibujar():
     glVertex3i( 5,-5, 0)
     glEnd()
     
-    glViewport(300, 0, 300, 300)
+    glViewport(300, 300, 300, 300)
     glColor3f(1.0, 1.0, 0.0)
     glBegin(GL_POLYGON)
     glVertex3i(-5, 0, 0)
