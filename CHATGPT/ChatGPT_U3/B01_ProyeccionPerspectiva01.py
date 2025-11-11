@@ -12,7 +12,7 @@
     Si presionas ESPACIO cambia a ortográfica:
     Ambos cuadrados (rojo y azul) se ven del mismo tamaño, aunque estén a distinta distancia.
 
-    👉 Con esto queda clara la diferencia:
+    Con esto queda clara la diferencia:
 
     Perspectiva = realismo.
     Ortográfica = precisión.
@@ -22,12 +22,22 @@ import glfw
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-# Inicializar GLFW
-if not glfw.init():
-    raise Exception("No se pudo inicializar GLFW")
 
-window = glfw.create_window(600, 600, "Perspectiva vs Ortográfica (Ejemplo simple)", None, None)
-glfw.make_context_current(window)
+def iniciar_ventana():
+    """
+    La funcion `iniciar_ventana` inicializa una ventana GLFW con dimensiones especificas y titulo 
+    :return: La funcion `iniciar_ventana` retorna la ventana GLFW como un objeto del tipo 'ventana'.
+    """
+    if not glfw.init():
+        raise Exception("No se pudo iniciar GLFW")
+    ventana = glfw.create_window(800, 600, "Manejo de tres dimensiones en OpenGL (PROFUNDIDAD)", None, None)
+    if not ventana:
+        glfw.terminate()
+        raise Exception("No se pudo crear la ventana")
+    glfw.make_context_current(ventana)
+    return ventana
+
+
 
 modo_perspectiva = True
 
@@ -80,3 +90,66 @@ while not glfw.window_should_close(window):
     glfw.poll_events()
 
 glfw.terminate()
+
+
+"""
+
+import glfw
+from OpenGL.GL import *
+
+
+
+def key_callback(window, key, scancode, action, mods):
+    
+    # Solo procesamos eventos cuando la tecla es PRESIONADA o REPETIDA
+    if action == glfw.PRESS or action == glfw.REPEAT:
+        
+        # 2. Identificación de Teclas
+        if key == glfw.KEY_UP:
+            print("Flecha Arriba presionada")
+   
+
+def dibujar_cuadro(x, tamanio):
+
+    #Dibuja un cuadrado en la posición x.
+    glBegin(GL_QUADS)
+    glColor3f(1.0, 1.0, 1.0)
+    glVertex2f(x, tamanio)
+    glVertex2f(x + tamanio, tamanio)
+    glVertex2f(x + tamanio, -tamanio)
+    glVertex2f(x, -tamanio)
+    glEnd()
+
+
+
+def programa_principal():
+    
+    ventana = iniciar_ventana()
+    # **********************************************
+    # * ESTA LÍNEA ES CLAVE: Registro del Callback *
+    # **********************************************
+    glfw.set_key_callback(ventana, key_callback)
+    
+    while not glfw.window_should_close(ventana):
+        # 1. Limpiar la pantalla con el color de fondo
+        glClearColor(0.0, 0.0, 0.0, 1.0)
+        glClear(GL_COLOR_BUFFER_BIT)
+        
+        # Dibujar el cuadro
+        dibujar_cuadro(-0.5, 0.2)
+        
+        # Intercambiar búferes para mostrar el resultado
+        glfw.swap_buffers(ventana)
+        
+        # Procesar eventos (clics, etc.)
+        glfw.poll_events()
+    
+    glfw.terminate()
+
+
+# LLamado al programa principal de control
+if __name__ == "__main__":
+    programa_principal()
+
+
+"""
