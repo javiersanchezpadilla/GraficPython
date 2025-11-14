@@ -45,10 +45,10 @@ def configurar_coordenadas_ventana(menos_x, mas_x, menos_y, mas_y, menos_z=-1.0,
 
 
 # Función para dibujar figuras 
-def dibujar_cuadros(angulo_lento, angulo_rapido):
+def dibujar_cuadros(angulo_lento, angulo_rapido, escala, pos_x, pos_y):
 
-    glPushMatrix()
-    glRotatef(angulo_lento, 1.0, 1.0, 1.0)   # Inclinación inicial de la escena
+    # glPushMatrix()
+    # glRotatef(angulo_lento, 1.0, 1.0, 1.0)   # Inclinación inicial de la escena
 
     glColor3f(1.0, 1.0, 1.0)        # Ejes coordenados
     glBegin(GL_LINES)
@@ -59,6 +59,7 @@ def dibujar_cuadros(angulo_lento, angulo_rapido):
     glVertex3f(0.0, 0.0, -15.0)
     glVertex3f(0.0, 0.0, 15.0)
     glEnd()
+    # glPopMatrix()
 
 
     glPushMatrix()
@@ -85,28 +86,59 @@ def dibujar_cuadros(angulo_lento, angulo_rapido):
     glEnd()
     glPopMatrix()
 
-    glColor3f(0.0, 0.0, 1.0)        # Polígono azul
+    glPushMatrix()
+    glTranslatef(-3.0, 3.0, 0.0)
+    glScalef(escala, escala, escala)    # Escalamiento
+    glRotatef(angulo_lento, 0.0, 0.0, 1.0)      # Rotacións
+    glColor3f(0.0, 0.0, 1.0)            # Polígono azul
     glBegin(GL_QUADS)
-    glVertex3f(-3.0, 6.0, 0.0)
-    glVertex3f(-2.0, 3.0, 0.0)
-    glVertex3f(-3.0, 0.0, 0.0)
-    glVertex3f(-4.0, 3.0, 0.0)
+    glVertex3f(-1.0, 0.0, 0.0)
+    glVertex3f(0.0, 3.0, 0.0)
+    glVertex3f(1.0, 0.0, 0.0)
+    glVertex3f(0.0, -3.0, 0.0)
     glEnd()
+    glPopMatrix()
 
+    glPushMatrix()
+    glTranslatef(pos_x, 3.0, 0.0)
     glColor3f(1.0, 0.0, 1.0)        # Polígono magenta
     glBegin(GL_LINE_LOOP)
-    glVertex3f(3.0, 6.0, 0.0)
-    glVertex3f(5.0, 4.0, 0.0)
-    glVertex3f(5.0, 1.0, 0.0)
-    glVertex3f(3.0, 0.0, 0.0)
-    glVertex3f(1.0, 1.0, 0.0)
-    glVertex3f(1.0, 4.0, 0.0)
+    glVertex3f(-2.0, 1.0, 0.0)
+    glVertex3f(0.0, 3.0, 0.0)
+    glVertex3f(2.0, 1.0, 0.0)
+    glVertex3f(2.0, -1.0, 0.0)
+    glVertex3f(0.0, -3.0, 0.0)
+    glVertex3f(-2.0, -2.0, 0.0)
     glEnd()
-
     glPopMatrix()
 
 
 
+    glColor3f(0.0, 1.0, 1.0)        # Polígono cian
+    glPushMatrix()
+    glTranslatef(-7.0, -7.0, 0.0)               # Traslación
+    
+    glRotatef(angulo_lento, 0.0, 0.0, 1.0)      # Rotación
+    glBegin(GL_QUADS)
+    glVertex3f(-2.0, -2.0, 0.0)
+    glVertex3f(-2.0, 2.0, 0.0)
+    glVertex3f(2.0, 2.0, 0.0)
+    glVertex3f(2.0, -2.0, 0.0)
+    glEnd()
+    # glPopMatrix()
+                  
+    glPushMatrix()
+    glTranslatef(-7.0, -2.0, 0.0)               # Traslación
+    glRotatef(angulo_rapido, 0.0, 0.0, 1.0)      # Rotación
+    glBegin(GL_QUADS)
+    glVertex3f(-1.0, -1.0, 0.0)
+    glVertex3f(-1.0, 1.0, 0.0)
+    glVertex3f(1.0, 1.0, 0.0)
+    glVertex3f(1.0, -1.0, 0.0)
+    glEnd()
+    glPopMatrix()
+    glPopMatrix()
+                  
 
 def programa_principal():
     ventana = iniciar_ventana() 
@@ -114,11 +146,32 @@ def programa_principal():
 
     angulo_rotacion_lento = 0.1
     angulo_rotacion_rapido = -0.5
+
+    escala = 0.1
+    factor_escala = 0.01
+
+    pos_x = 0.0
+    factor_x = 0.09
+    pos_y = 0.0
+
     while not glfw.window_should_close(ventana):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        dibujar_cuadros(angulo_rotacion_lento, angulo_rotacion_rapido) 
+        dibujar_cuadros(angulo_rotacion_lento, angulo_rotacion_rapido, escala, pos_x, pos_y) 
         angulo_rotacion_lento += 0.5
         angulo_rotacion_rapido += -1.0
+        escala += factor_escala
+        if escala > 2.0:
+            factor_escala = -0.01
+        elif escala < 0.1:
+            factor_escala = 0.01
+
+        pos_x += factor_x
+        pos_y += 0.01
+        if pos_x > 11.0:
+            factor_x = -0.09
+        elif pos_x < -11.0:
+            factor_x = 0.09
+
 
         glfw.swap_buffers(ventana)
         glfw.poll_events()
