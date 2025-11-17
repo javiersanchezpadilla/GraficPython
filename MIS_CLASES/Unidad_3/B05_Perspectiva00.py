@@ -1,11 +1,10 @@
-""" PARA EL USO DE LOS CUBOS DE ALAMBRE GLUT:
+""" ESTE PROGRAMA NO HACE NADA, SOLAMENTE ES PARA EXPLICAR CONCEPTOS
 
-    Una pregunta común es: ¿si puedo hacer uso de freeglut en python?
-    Es importante entender cómo se relacionan estas librerías.
-    La respuesta corta es: Sí, técnicamente puedes usar FreeGLUT en Python, pero no es necesario 
-    ni la mejor práctica para tu configuración actual (GLFW + PyOpenGL).
-
-    Aquí tienes la explicación detallada y por qué es mejor seguir con el código que ya tenemos:
+    PARA EL USO DE LOS CUBOS DE ALAMBRE GLUT:
+    -----------------------------------------
+    
+    Técnicamente podemos usar FreeGLUT en Python, pero no es necesario 
+    ni la mejor práctica para la configuración actual (GLFW + PyOpenGL).
 
     1. ¿Cómo se usaría FreeGLUT en Python?
     FreeGLUT es una reimplementación moderna de la vieja librería C, GLUT. Para usarla en Python, 
@@ -21,7 +20,7 @@
     y permitirte usar funciones como glutWireCube().
 
     2. ¿Por qué es mejor evitarlo? (El Contexto Moderno)
-    Te recomiendo encarecidamente que no lo hagas si quieres estabilidad, especialmente en Linux:
+    Te recomiendo encarecidamente que no usarlas si quieres estabilidad, especialmente en Linux (en windows si):
 
     Librería	        Propósito Original	                   Problema al Mezclar
     ---------------------------------------------------------------------------------
@@ -36,9 +35,7 @@
     Cuando ya estás usando GLFW para la ventana, la filosofía es usar PyOpenGL para las llamadas de dibujo y 
     tú mismo definir la geometría.
 
-    Conclusión y Solución Estándar
-    
-    Método glutWireCube() (Inestable):
+    Conclusión y Solución Estándar, Método glutWireCube() (Inestable):
 """
 
 
@@ -54,6 +51,6 @@ if not glfw.init():
 window = glfw.create_window(800, 600, "gluPerspective y gluLookAt - Ejemplo básico", None, None)
 glfw.make_context_current(window)
 glEnable(GL_DEPTH_TEST)
-glutInit()                      # <-- Inicializar GLUT para usar cubos de alambre (figuras precargadas de GLUT)
+glutInit()                      # <-- Inicializar GLUT para usar cubos de alambre (figuras precargadas de GLUT o FreeGlut)
 
 # Resto del código...
