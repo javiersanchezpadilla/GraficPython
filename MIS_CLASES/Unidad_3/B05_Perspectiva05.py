@@ -38,47 +38,51 @@ def configurar_perspectiva(ancho, alto):
     
     glMatrixMode(GL_MODELVIEW)
 
+
+
 def dibujar_ejes():
     """Dibuja ejes coordenados para referencia"""
     glBegin(GL_LINES)
-    
-    # Eje X (Rojo)
-    glColor3f(1, 0, 0)
+    glColor3f(1, 0, 0)          # Eje X (Rojo)
     glVertex3f(-15, 0, 0)
     glVertex3f(15, 0, 0)
     
-    # Eje Y (Verde)
-    glColor3f(0, 1, 0)
+    glColor3f(0, 1, 0)          # Eje Y (Verde)
     glVertex3f(0, -15, 0)
     glVertex3f(0, 15, 0)
     
-    # Eje Z (Azul)
-    glColor3f(0, 0, 1)
+    glColor3f(0, 0, 1)          # Eje Z (Azul)
     glVertex3f(0, 0, -15)
     glVertex3f(0, 0, 15)
-    
     glEnd()
+
+
 
 def dibujar_cubo_en(x, y, z, tamaño=1.0):
     """Dibuja un cubo en posición específica"""
+
     glPushMatrix()
     glTranslatef(x, y, z)
     glScalef(tamaño, tamaño, tamaño)
     
     glBegin(GL_QUADS)
-    # Cara frontal (roja)
-    glColor3f(1, 0, 0)
-    glVertex3f(-1, -1, 1); glVertex3f(1, -1, 1)
-    glVertex3f(1, 1, 1); glVertex3f(-1, 1, 1)
+    glColor3f(1, 0, 0)                                  # Cara frontal (roja)
+    glVertex3f(-1, -1, 1)
+    glVertex3f(1, -1, 1)
+    glVertex3f(1, 1, 1)
+    glVertex3f(-1, 1, 1)
     
-    # Cara trasera (verde)
-    glColor3f(0, 1, 0)
-    glVertex3f(-1, -1, -1); glVertex3f(-1, 1, -1)
-    glVertex3f(1, 1, -1); glVertex3f(1, -1, -1)
+    glColor3f(0, 1, 0)                                  # Cara trasera (verde)
+    glVertex3f(-1, -1, -1)
+    glVertex3f(-1, 1, -1)
+    glVertex3f(1, 1, -1)
+    glVertex3f(1, -1, -1)
     
-    # Resto de caras...
+    # Resto de caras (FALTA DESARROLLAR ESTA PARTE, PERO CON ESTO SE ENTIENDE)
     glEnd()
     glPopMatrix()
+
+
 
 # Configuración principal
 if not glfw.init():

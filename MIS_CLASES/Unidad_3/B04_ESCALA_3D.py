@@ -106,10 +106,24 @@
     ---------------------------------------------
     Cuando importamos:
 
+    import glfw
+    from OpenGL.GL import *
     from OpenGL.GLU import *
-    from OpenGL.GLUT import *        <-- Aquí es donde se accede a las funciones de GLUT/FreeGLUT
+    from OpenGL.GLUT import *       <-- Aquí es donde se accede a las funciones de GLUT/FreeGLUT
 
     ya para llamar a las funciones y usarlas debemos referenciar de la siguiente forma:
+
+        glutInit()                     <-- Inicializar para poder hacer uso de las funciones
+        glutWireSphere(2, 25, 25)      <-- Llamar a la funcion glutWireSphere()
+        glutWireCube(2)                <-- Llamar a la funcion glutWireCube()
+        glutWireTorus(1, 3, 16, 32)    <-- Llamar a la funcion glutWireTorus()
+
+
+    EN CASO DE IMPORTAR Freeglut DE ESTA MANERA:
+
+    from OpenGL import GLUT  
+    
+    entonces tenemos que referencias a las funciones de esta forma:
 
         GLUT.glutInit()                     <-- Inicializar para poder hacer uso de las funciones
         GLUT.glutWireSphere(2, 25, 25)      <-- Llamar a la funcion glutWireSphere()

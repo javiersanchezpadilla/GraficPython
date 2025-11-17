@@ -113,3 +113,9 @@ gráficos:
 Dibujar (Tú): Ejecutas comandos de OpenGL.
 Mostrar (swap_buffers): Enseñas el resultado en pantalla.
 Reaccionar (poll_events): Escuchas si el usuario hizo algo para prepararte para el siguiente fotograma.
+
+
+¿Cómo Instalar las Dependencias?
+================================
+
+pip3 install PyOpenGL PyOpenGL_accelerate glfw

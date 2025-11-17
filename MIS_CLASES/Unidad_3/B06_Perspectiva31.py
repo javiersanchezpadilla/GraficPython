@@ -1,5 +1,4 @@
-"""
-    Puntos Clave:
+""" Puntos Clave:
     near y far en gluPerspective() deben contener tu escena
 
     Posición de cámara en gluLookAt() debe estar fuera del volumen -15 a 15
