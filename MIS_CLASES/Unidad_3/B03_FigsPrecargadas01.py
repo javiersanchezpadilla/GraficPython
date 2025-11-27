@@ -1,4 +1,9 @@
-""" Este código permite hacer uso de las figuras precargadas en FreeGlut """
+""" Este código permite hacer uso de las figuras precargadas en FreeGlut 
+
+    Si es el caso en windows tenemos que instalar los paquetes para que reconozca GLUT 
+
+        pip install PyOpenGL PyOpenGL-accelerate PyGLUT
+"""
 
 import glfw
 from OpenGL.GL import *

@@ -54,3 +54,31 @@ glEnable(GL_DEPTH_TEST)
 glutInit()                      # <-- Inicializar GLUT para usar cubos de alambre (figuras precargadas de GLUT o FreeGlut)
 
 # Resto del código...
+
+
+ESTA ES LA SOLUCIÓN PRESENTADA PARA CORREGIR EL ERROR DE GLUT EN windows
+
+import glfw
+from OpenGL.GL import *
+from OpenGL.GLU import *
+from OpenGL.GLUT import *       # <-- Aqui estamos importando la biblioteca GLUT FreeGLUT para las figuras precargadas.
+
+
+def iniciar_ventana():
+    glutInit()                                      # <-- Inicializar GLUT para usar figuras precargadas
+    glutInitWindowSize(1, 1)                        # <-- Menciona que el tamaño de la ventana es de 1x1 (ancho, alto) pixeles
+    glutInitWindowPosition(0,0)                     # <-- Posiciona la ventana en las coordenadas (0,0)
+    glutCreateWindow(b"Ventana inutil de GLUT")     # <-- Crea la ventana GLUT
+    
+    if not glfw.init():
+        raise Exception("No se pudo iniciar GLFW")
+    ventana = glfw.create_window(800, 600, "Formas Básicas con transformaciones", None, None)
+    if not ventana:
+        glfw.terminate()
+        raise Exception("No se pudo crear la ventana")
+    glfw.make_context_current(ventana)
+
+    # Activar buffer de profundidad, necesario para trabajar en 3D y calcular la profundidad de los
+    # objetos en la escena.
+    glEnable(GL_DEPTH_TEST)
+    return ventana

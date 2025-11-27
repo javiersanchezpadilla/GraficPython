@@ -13,10 +13,10 @@
     Cuando dibujas un cubo, TÚ defines sus coordenadas: por ejemplo aquí nos basamos en coordenadas normalizadas
 
         glBegin(GL_QUADS)
-        glVertex3f(-1, -1, 1)   # ← TÚ defines que va en x=-1, y=-1, z=1
-        glVertex3f( 1, -1, 1)   # ← TÚ defines que va en x=1, y=-1, z=1  
-        glVertex3f( 1,  1, 1)   # ← TÚ defines que va en x=1, y=1, z=1
-        glVertex3f(-1,  1, 1)   # ← TÚ defines que va en x=-1, y=1, z=1
+        glVertex3f(-1, -1, 1)   # TÚ defines que va en x=-1, y=-1, z=1
+        glVertex3f( 1, -1, 1)   # TÚ defines que va en x=1, y=-1, z=1  
+        glVertex3f( 1,  1, 1)   # TÚ defines que va en x=1, y=1, z=1
+        glVertex3f(-1,  1, 1)   # TÚ defines que va en x=-1, y=1, z=1
         glEnd()
 
     CREANDO UN MUNDO DE -15 A 15 EN TODOS LOS EJES DE COORDENADAS. Pero ¿qué sucede si queremos crear una escena 
