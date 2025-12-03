@@ -19,9 +19,11 @@ from OpenGL.GL import *
 from PIL import Image
 import time
 
-# --------------------------
-# Función para cargar textura
-# --------------------------
+                                        # Para controlar el sentido del ave
+va_hacia_la_derecha = False
+
+
+                                        # Función para cargar textura
 def cargar_textura(ruta):
     imagen = Image.open(ruta).transpose(Image.FLIP_TOP_BOTTOM)
     img_data = imagen.convert("RGBA").tobytes()
@@ -38,10 +40,8 @@ def cargar_textura(ruta):
 
     return tex_id
 
-# --------------------------------------------------
-# Función para dibujar un quad con una textura dada
-# --------------------------------------------------
-def dibujar_quad(x, y, w, h):
+                                        # Función para dibujar un quad con una textura dada
+def dibujar_poligono(x, y, w, h):
     glBegin(GL_QUADS)
     glTexCoord2f(0, 0); glVertex2f(x - w, y - h)
     glTexCoord2f(1, 0); glVertex2f(x + w, y - h)
@@ -49,9 +49,8 @@ def dibujar_quad(x, y, w, h):
     glTexCoord2f(0, 1); glVertex2f(x - w, y + h)
     glEnd()
 
-# ----------------------------
-# Programa principal GLFW
-# ----------------------------
+
+                                        # Programa principal GLFW
 def main():
     # Inicializar GLFW
     if not glfw.init():
@@ -97,29 +96,22 @@ def main():
     y = 0.0
     velocidad = 0.03
 
-    # -----------------------------
-    # Loop principal
-    # -----------------------------
+                                                # Loop principal
+    
     while not glfw.window_should_close(ventana):
 
         glClear(GL_COLOR_BUFFER_BIT)
 
-        # --------------------------------
-        # Dibujar el fondo (pantalla llena)
-        # --------------------------------
+                                                # Dibujar el fondo (pantalla llena)
         glBindTexture(GL_TEXTURE_2D, fondo)
-        dibujar_quad(0, 0, 1, 1)
+        dibujar_poligono(0, 0, 1, 1)
 
-        # --------------------------------
-        # Actualizar animación
-        # --------------------------------
+                                                # Actualizar animación
         if time.time() - ultimo_tiempo > velocidad_anim:
             frame = (frame + 1) % len(sprites)
             ultimo_tiempo = time.time()
 
-        # --------------------------------
-        # Movimiento con teclas
-        # --------------------------------
+                                                # Movimiento con teclas
         if glfw.get_key(ventana, glfw.KEY_UP) == glfw.PRESS:
             y += velocidad
         
@@ -132,13 +124,11 @@ def main():
         if glfw.get_key(ventana, glfw.KEY_RIGHT) == glfw.PRESS:
             x += velocidad
 
-        # -------------------------------
-        # Dibujar el sprite
-        # -------------------------------
+                                                # Dibujar el sprite
         glBindTexture(GL_TEXTURE_2D, sprites[frame])
-        dibujar_quad(x, y, 0.15, 0.15)
+        dibujar_poligono(x, y, 0.15, 0.15)
 
-        # Intercambiar buffers
+                                                # Intercambiar buffers (mas velocidad)
         glfw.swap_buffers(ventana)
         glfw.poll_events()
 
