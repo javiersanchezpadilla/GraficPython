@@ -32,21 +32,34 @@ glfw.init()
 window = glfw.create_window(800, 600, "Parallax Demo", None, None)
 glfw.make_context_current(window)
 
+
+glEnable(GL_TEXTURE_2D)
+                                                        # Activar transparencia en PNGs
+glEnable(GL_BLEND)
+glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
+
 # ------------------------
 # Cargar capas de parallax
 # ------------------------
 layers = [
-    load_texture("parallax/layer0.png"),
-    load_texture("parallax/layer1.png"),
-    load_texture("parallax/layer2.png"),
-    load_texture("parallax/layer3.png")
+    load_texture("/home/javier/Documentos/Programas/Python/Texturas/PNGs/Parallax/Capas/Capa09_cielo.png"),
+    load_texture("/home/javier/Documentos/Programas/Python/Texturas/PNGs/Parallax/Capas/Capa01_nubes01.png"),
+    load_texture("/home/javier/Documentos/Programas/Python/Texturas/PNGs/Parallax/Capas/Capa02_nubes02.png"),
+    load_texture("/home/javier/Documentos/Programas/Python/Texturas/PNGs/Parallax/Capas/Capa03_nubes03.png"),
+    load_texture("/home/javier/Documentos/Programas/Python/Texturas/PNGs/Parallax/Capas/Capa04_niebla.png"),
+    load_texture("/home/javier/Documentos/Programas/Python/Texturas/PNGs/Parallax/Capas/Capa05_castillo.png"),
+    load_texture("/home/javier/Documentos/Programas/Python/Texturas/PNGs/Parallax/Capas/Capa06_estrellas03.png"),
+    load_texture("/home/javier/Documentos/Programas/Python/Texturas/PNGs/Parallax/Capas/Capa07_estrellas02.png"),
+    load_texture("/home/javier/Documentos/Programas/Python/Texturas/PNGs/Parallax/Capas/Capa08_estrellas01.png"
+    )
 ]
 
 # Velocidades de movimiento (más bajas = más lejos)
-scroll_speed = [0.002, 0.004, 0.008, 0.012]
+scroll_speed = [0.002, 0.004, 0.006, 0.008, 0.01, 0.012, 0.014, 0.016, 0.018]
 
 # Posición inicial del scroll
-scroll_x = [0.0, 0.0, 0.0, 0.0]
+scroll_x = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 # ------------------------
 # Bucle principal
@@ -73,10 +86,15 @@ while not glfw.window_should_close(window):
         glBegin(GL_QUADS)
 
         # Nota: usamos scroll_x[i] para mover cada capa
-        glTexCoord2f(0 + scroll_x[i], 0); glVertex2f(-1, -1 + i * 0.00)
-        glTexCoord2f(2 + scroll_x[i], 0); glVertex2f( 1, -1 + i * 0.00)
-        glTexCoord2f(2 + scroll_x[i], 1); glVertex2f( 1,  1 + i * 0.00)
-        glTexCoord2f(0 + scroll_x[i], 1); glVertex2f(-1,  1 + i * 0.00)
+        # glTexCoord2f(0 + scroll_x[i], 0); glVertex2f(-1, -1 + i * 0.00)
+        # glTexCoord2f(1 + scroll_x[i], 0); glVertex2f( 1, -1 + i * 0.00)
+        # glTexCoord2f(1 + scroll_x[i], 1); glVertex2f( 1,  1 + i * 0.00)
+        # glTexCoord2f(0 + scroll_x[i], 1); glVertex2f(-1,  1 + i * 0.00)
+
+        glTexCoord2f(0 + scroll_x[i], 0); glVertex2f(-1, -1)
+        glTexCoord2f(1 + scroll_x[i], 0); glVertex2f( 1, -1)
+        glTexCoord2f(1 + scroll_x[i], 1); glVertex2f( 1,  1)
+        glTexCoord2f(0 + scroll_x[i], 1); glVertex2f(-1,  1)
 
         glEnd()
 
