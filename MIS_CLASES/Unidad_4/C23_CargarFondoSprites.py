@@ -74,7 +74,7 @@ def funcion_principal():
     glfw.make_context_current(ventana)
                                                             # *********   CARGAR EL FONDO
 
-    background_tex, bg_w, bg_h = cargar_textura("/home/javier/Documentos/Programas/Python/Texturas/PNGs/FondoSprite02.bmp")
+    background_tex, bg_w, bg_h = cargar_textura("/home/javier/Documentos/Programas/Python/Texturas/PNGs/FondoSprite02.jpg")
 
     posicion_del_fondo = 0.0                                # posición del fondo
     velocidad_del_fondo = 0.01                              # velocidad del scroll

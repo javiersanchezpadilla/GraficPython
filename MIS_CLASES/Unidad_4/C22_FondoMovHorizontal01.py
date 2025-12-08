@@ -105,7 +105,7 @@ def main():
     ventana = glfw.create_window(800, 600, "Cargar textura desde posicion variable", None, None)
     glfw.make_context_current(ventana)
                                                                 # Cargar fondo
-    fondo_tex = cargar_textura("/home/javier/Documentos/Programas/Python/Texturas/PNGs/PruebaTextura.bmp")
+    fondo_tex = cargar_textura("/home/javier/Documentos/Programas/Python/Texturas/PNGs/PruebaTextura.jpg")
     glEnable(GL_TEXTURE_2D)
                                                                 # Programa principal
     while not glfw.window_should_close(ventana):

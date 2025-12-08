@@ -35,7 +35,7 @@ def main():
     ventana = glfw.create_window(800, 600, "Cargar una imagen en un poligono", None, None)
     glfw.make_context_current(ventana)
 
-    ruta = "/home/javier/Documentos/Programas/Python/Texturas/PNGs/PruebaTextura.bmp"
+    ruta = "/home/javier/Documentos/Programas/Python/Texturas/PNGs/PruebaTextura.jpg"
     imagen_de_textura = cargar_textura(ruta)
 
     # Configurar OpenGL

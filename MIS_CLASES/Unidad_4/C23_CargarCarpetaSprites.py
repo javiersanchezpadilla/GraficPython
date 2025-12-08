@@ -54,7 +54,7 @@ def principal():
     if not glfw.init():
         return
 
-    ventana = glfw.create_window(800, 600, "Cargar varios sprites", None, None)
+    ventana = glfw.create_window(800, 600, "Cargar todos los sprites de una carpeta", None, None)
     glfw.make_context_current(ventana)
 
     # Cargar animaciones por dirección

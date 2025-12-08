@@ -40,7 +40,7 @@ def main():
     # Cargar fondo
     # la variable fondo_text es el ID de la textura
     # fondo_ancho y fondo_alto son el ancho y alto de la imagen, extraidos de la imagen cargada
-    fondo_tex, fondo_ancho, fondo_alto = cargar_textura("/home/javier/Documentos/Programas/Python/Texturas/PNGs/FondoSprite02.bmp")
+    fondo_tex, fondo_ancho, fondo_alto = cargar_textura("/home/javier/Documentos/Programas/Python/Texturas/PNGs/FondoSprite02.jpg")
     # fondo_tex = cargar_textura("/home/javier/Documentos/Programas/Python/Texturas/PNGs/PruebaTextura.bmp")  # Probar con esta textura
 
     glEnable(GL_TEXTURE_2D)
