@@ -69,13 +69,13 @@ def detectar_colision():
     # La colisión ocurre cuando el borde de uno se cruza con el del otro
     colision = False
     
-    # Colisión por la derecha del cuadro 1
-    if cuadro1['pos_x'] + cuadro1['tamanio'] >= cuadro2['pos_x'] and cuadro1['pos_x'] < cuadro2['pos_x']:
+    # Colisión por la derecha del cuadro 1 contra el cuadro 2
+    if cuadro1['pos_x'] + cuadro1['tamanio'] >= cuadro2['pos_x']: # and cuadro1['pos_x'] < cuadro2['pos_x']:
         colision = True
         
     # Colisión por la izquierda del cuadro 1
-    if cuadro1['pos_x'] <= cuadro2['pos_x'] + cuadro2['tamanio'] and cuadro1['pos_x'] > cuadro2['pos_x']:
-        colision = True
+    # if cuadro1['pos_x'] <= cuadro2['pos_x'] + cuadro2['tamanio'] and cuadro1['pos_x'] > cuadro2['pos_x']:
+    #     colision = True
         
     return colision
 
@@ -91,7 +91,7 @@ def programa_principal():
         actualizar_posicion(cuadro1)
         actualizar_posicion(cuadro2)
         
-        # 2. Detectar colisión entre ellos
+        # 2. Detectar colisión entre ellos y cambia ambos sentidos
         if detectar_colision():
             cuadro1['velocidad'] *= -1
             cuadro2['velocidad'] *= -1

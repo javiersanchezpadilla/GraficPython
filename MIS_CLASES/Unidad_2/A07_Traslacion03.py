@@ -1,8 +1,11 @@
-""" En este ejercicio se dibujaran dos cuadros que se moveran horizontalmente en direcciones opuestas.
+""" En este ejercicio se dibujaran dos cuadros que se moveran horizontalmente 
+    en direcciones opuestas.
     Cuando los cuadros colisionen entre si, rebotaran y cambiaran de direccion.
     Cada cuadro estara formado por cuatro vertices y tendra un color diferente.
-    La diferencia en este código es que se implementa el concepto de Programación Orientada a Objetos (OOP).
-    Se define una clase `Cuadro` que encapsula los atributos y métodos relacionados con cada cuadro.
+    La diferencia en este código es que se implementa el concepto de Programación
+    Orientada a Objetos (OOP).
+    Se define una clase `Cuadro` que encapsula los atributos y métodos relacionados
+    con cada cuadro.
     Esto hace que el código sea más modular, reutilizable y fácil de entender.
 """
 

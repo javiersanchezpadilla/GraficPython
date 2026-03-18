@@ -1,18 +1,24 @@
 """ En este ejercicio se dibujara un cuadro en el centro de la pantalla.
-    Cuando el usuario oprima una tecla se identidicara en la pantalla de la consola.
+    Cuando el usuario oprima una tecla se identidicara en la pantalla de 
+    la consola.
     LA idea es entender como funciona el callback de teclado en GLFW.
 
-    Dado que estamos utilizando la biblioteca GLFW, la forma de detectar e identificar 
-    las teclas es a través de una función llamada callback de teclado.
+    Dado que estamos utilizando la biblioteca GLFW, la forma de detectar e 
+    identificar las teclas es a través de una función llamada callback de 
+    teclado.
 
     1. Implementación del Callback de Teclado en GLFW
-       GLFW utiliza un sistema de "callbacks" (llamadas de retorno) para manejar la entrada. 
-       En lugar de revisar en cada fotograma si una tecla está presionada, le dices a GLFW: 
+       GLFW utiliza un sistema de "callbacks" (llamadas de retorno) para 
+       manejar la entrada. 
+       En lugar de revisar en cada fotograma si una tecla está presionada, 
+       le dices a GLFW: 
        "Si ocurre un evento de teclado, llama a esta función que te voy a dar."
 
     Código de la Función Callback
-    Necesitas definir una función que GLFW llamará automáticamente. Esta función recibe varios parámetros, 
-    siendo los más importantes el código de la tecla y la acción (presionar o soltar).
+    -----------------------------
+    Necesitas definir una función que GLFW llamará automáticamente. Esta función 
+    recibe varios parámetros, siendo los más importantes el código de la tecla 
+    y la acción (presionar o soltar).
 
     Tecla                   Constante       GLFWDescripción
     -----------------------------------------------------------------------
@@ -23,11 +29,12 @@
     
 
     *** OTROS PARÁMETROS CLAVE SON:
-    -------------------------------------------------------------------------------------------    
+    --------------------------------------------------------------------------
     action                  Indica lo que sucedió con la tecla:
         glfw.PRESS:     La tecla fue presionada por primera vez.
         glfw.RELEASE:   La tecla fue soltada.
-        glfw.REPEAT:    La tecla se mantiene presionada (el sistema operativo repite la señal).
+        glfw.REPEAT:    La tecla se mantiene presionada (el sistema operativo 
+                        repite la señal).
 
         
     *** CONSTANTES DE TECLAS COMUNES EN GLFW

@@ -65,6 +65,8 @@ def programa_principal():
         
         # 2. Actualizar la posición
         posicion_x += velocidad_x
+        # mostramos el cambio de posicion
+        print(f'posicion {posicion_x =}')
         
         # Invertir la dirección si el cuadro llega a un borde
         if posicion_x + tamanio_cuadro >= 1.0 or posicion_x <= -1.0:
