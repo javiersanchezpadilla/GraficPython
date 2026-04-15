@@ -32,6 +32,9 @@ def framebuffer_size_callback(window, width, height):
     # Esta función se llama automáticamente cuando la ventana se redimensiona.
     # ¡Llamada clave! Le dice a OpenGL que el área de dibujo debe 
     # ajustarse a las nuevas dimensiones (width, height) de la ventana.
+    global ventana_alto, ventana_ancho
+    ventana_ancho = width
+    ventana_alto = height
     glViewport(0, 0, width, height)
 
 
@@ -45,9 +48,10 @@ def dibuja_fondo(rojo, verde, azul):
     glEnd()
 
 
-def dibujar():
+def dibujar(ancho_ventana, alto_ventana):
 
-    glViewport(0, 300, 300, 300)
+    # glViewport(0, 300, 300, 300)
+    glViewport(0, int(alto_ventana/2), int(ancho_ventana/2), int(alto_ventana/2))
     dibuja_fondo(0.35, 0.46, 0.62)
     glColor3f(1.0, 0.0, 0.0)
     glBegin(GL_QUADS)
@@ -57,7 +61,8 @@ def dibujar():
     glVertex3i( 5,-5, 0)
     glEnd()
 
-    glViewport(300, 300, 300, 300)
+    # glViewport(300, 300, 300, 300)
+    glViewport(int(ancho_ventana/2), int(alto_ventana/2), int(ancho_ventana/2), int(alto_ventana/2))
     dibuja_fondo(0.80, 0.16, 0.25)
     glColor3f(0.0, 1.0, 0.0)
     glBegin(GL_TRIANGLES)
@@ -66,7 +71,8 @@ def dibujar():
     glVertex3i( 5,-5, 0)
     glEnd()
 
-    glViewport(0, 0, 300, 300)
+    # glViewport(0, 0, 300, 300)
+    glViewport(0, 0, int(ancho_ventana/2), int(alto_ventana/2))
     dibuja_fondo(0.20, 0.30, 0.50)
     glColor3f(0.0, 0.0, 1.0)
     glBegin(GL_POLYGON)
@@ -76,7 +82,8 @@ def dibujar():
     glVertex3i( 5,-5, 0)
     glEnd()
 
-    glViewport(300, 0, 300, 300)
+    # glViewport(300, 0, 300, 300)
+    glViewport(int(ancho_ventana/2), 0, int(ancho_ventana/2), int(alto_ventana/2))
     dibuja_fondo(0.1, 0.8,0.1)
     glColor3f(1.0, 1.0, 0.0)
     glBegin(GL_POLYGON)
@@ -101,7 +108,7 @@ if __name__ == "__main__":
     while not glfw.window_should_close(ventana):
         glClear(GL_COLOR_BUFFER_BIT)
         # Llama a la función de dibujo de mapa de bits
-        dibujar()
+        dibujar(ventana_ancho, ventana_alto)
         glfw.swap_buffers(ventana)
         glfw.poll_events()
     

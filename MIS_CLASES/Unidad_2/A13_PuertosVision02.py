@@ -51,6 +51,9 @@
     y tendrá un tamaño de 300 pixeles de ancho por 300 pixeles de alto
 
     Podmeos cambiar el orden de creación de los puertos de visión para ver como afecta al resultado final.
+
+    Este código tenia un error, ya que no calculaba las posiciones del puerto de visión nuevas correspondiente
+    a las nuevas coordenadas
 """
 
 import glfw
@@ -83,12 +86,16 @@ def framebuffer_size_callback(window, width, height):
     # Esta función se llama automáticamente cuando la ventana se redimensiona.
     # ¡Llamada clave! Le dice a OpenGL que el área de dibujo debe 
     # ajustarse a las nuevas dimensiones (width, height) de la ventana.
+    global ventana_ancho, ventana_alto
+    ventana_ancho = width
+    ventana_alto = height
     glViewport(0, 0, width, height)
 
 
-def dibujar():
+def dibujar(ancho_ventana, alto_ventana):
 
-    glViewport(0, 0, 300, 300)
+    # glViewport(0, 0, 300, 300)
+    glViewport(0, 0, int(ancho_ventana/2), int(alto_ventana/2))
     glColor3f(1.0, 0.0, 0.0)
     glBegin(GL_QUADS)
     glVertex3i(-5,-5, 0)
@@ -97,7 +104,8 @@ def dibujar():
     glVertex3i( 5,-5, 0)
     glEnd()
     
-    glViewport(300, 0, 300, 300)
+    # glViewport(300, 0, 300, 300)
+    glViewport(int(ancho_ventana/2), 0, int(ancho_ventana/2), int(alto_ventana/2))
     glColor3f(0.0, 1.0, 0.0)
     glBegin(GL_TRIANGLES)
     glVertex3i(-5,-5, 0)
@@ -105,7 +113,8 @@ def dibujar():
     glVertex3i( 5,-5, 0)
     glEnd()
     
-    glViewport(0, 300, 300, 300)
+    # glViewport(0, 300, 300, 300)
+    glViewport(0, int(alto_ventana/2), int(ancho_ventana/2), int(alto_ventana/2))
     glColor3f(0.0, 0.0, 1.0)
     glBegin(GL_POLYGON)
     glVertex3i(-5, 0, 0)
@@ -114,7 +123,8 @@ def dibujar():
     glVertex3i( 5,-5, 0)
     glEnd()
     
-    glViewport(300, 300, 300, 300)
+    # glViewport(300, 300, 300, 300)
+    glViewport(int(ancho_ventana/2), int(alto_ventana/2), int(ancho_ventana/2), int(alto_ventana/2))
     glColor3f(1.0, 1.0, 0.0)
     glBegin(GL_POLYGON)
     glVertex3i(-5, 0, 0)
@@ -130,15 +140,15 @@ if __name__ == "__main__":
     ventana_alto = 600
     ventana = iniciar_ventana()
 
-    # Configurar la proyección para trabajar con coordenadas de píxeles
     configurar_coordenadas_ventana(-10.0, 10.0, -10.0, 10.0)
-    glClearColor(0.0, 0.0, 0.2, 1.0) # Fondo azul oscuro
+    glClearColor(0.0, 0.0, 0.2, 1.0)        # Fondo azul oscuro
     glfw.set_framebuffer_size_callback(ventana, framebuffer_size_callback)
     
     while not glfw.window_should_close(ventana):
         glClear(GL_COLOR_BUFFER_BIT)
         # Llama a la función de dibujo para los poligonos
-        dibujar()
+        dibujar(ventana_ancho, ventana_alto)
+        print(f'Ventana ancho={ventana_ancho}, alto={ventana_alto}')
         glfw.swap_buffers(ventana)
         glfw.poll_events()
     

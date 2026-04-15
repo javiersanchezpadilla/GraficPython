@@ -19,9 +19,9 @@
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-    Ahora lo activamos en la de iniciar_ventana() con la instrucción:
-        glEnable(GL_DEPTH_TEST)
+    Ahora lo activamos al momento de iniciar_ventana() con la instrucción:
 
+        glEnable(GL_DEPTH_TEST)
 
     Tambien podriamos indicar ambas lineas directamente en el ciclo principal o dentro dela funcion de dibujo
     
@@ -47,7 +47,10 @@ def iniciar_ventana():
         raise Exception("No se pudo crear la ventana")
     glfw.make_context_current(ventana)
 
-    # Activar buffer de profundidad, necesario para trabajar en 3D y calcular la profundidad de los
+    # ******************************************
+    # PASO 2 Activamos el buffer de profundidad
+    # ******************************************
+    # Es necesario para trabajar en 3D y calcular la profundidad de los
     # objetos en la escena.
     glEnable(GL_DEPTH_TEST)
 
@@ -100,8 +103,11 @@ def programa_principal():
 
     while not glfw.window_should_close(ventana):
 
+        # ********************************************
+        # PASO 1 habilitamos el buffer de profundidad
+        # ********************************************
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
+        
         # Distancias iniciales de los cuadros
         z_cuadro1 = -3   # más cercano
         z_cuadro2 = -7   # más lejano
