@@ -1,5 +1,6 @@
 """ Este código permite hacer uso de las figuras precargadas en FreeGlut 
-    El objetivo es iluminar la escena"""
+    El objetivo es iluminar la escena
+    ver las notas de iluminacion en el bloque principal  """
 
 import glfw
 from OpenGL.GL import *
@@ -186,6 +187,12 @@ def programa_principal():
     # Configurar perspectiva
     ancho, alto = glfw.get_window_size(ventana)
     cambiar_perspectiva(ancho, alto, 45)
+
+    # *****************************************************************
+    # Iluminamos la escena                                          ***
+    glEnable(GL_LIGHTING)           # Habilitamos la iluminación    ***
+    glEnable(GL_LIGHT0)             # Encendemos un foco            ***
+    # *****************************************************************
 
     while not glfw.window_should_close(ventana):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)

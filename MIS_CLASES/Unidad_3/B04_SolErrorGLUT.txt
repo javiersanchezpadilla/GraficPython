@@ -1,8 +1,11 @@
 """ ESTE PROGRAMA NO HACE NADA, SOLAMENTE ES PARA EXPLICAR CONCEPTOS
 
+    Esta es la solución para que podamos usar las figuras precargadas en windows
+
+
     PARA EL USO DE LOS CUBOS DE ALAMBRE GLUT:
     -----------------------------------------
-    
+
     Técnicamente podemos usar FreeGLUT en Python, pero no es necesario 
     ni la mejor práctica para la configuración actual (GLFW + PyOpenGL).
 
@@ -38,6 +41,8 @@
     Conclusión y Solución Estándar, Método glutWireCube() (Inestable):
 """
 
+Está es la manera en que tengo el código (lo cual para los usuarios en Windows no funciona
+------------------------------------------------------------------------------------------)
 
 import glfw
 from OpenGL.GL import *
@@ -56,7 +61,8 @@ glutInit()                      # <-- Inicializar GLUT para usar cubos de alambr
 # Resto del código...
 
 
-ESTA ES LA SOLUCIÓN PRESENTADA PARA CORREGIR EL ERROR DE GLUT EN windows
+ESTA ES LA SOLUCIÓN PRESENTADA PARA CORREGIR EL ERROR DE GLUT EN windows (en linux no va a funcionar)
+-----------------------------------------------------------------------------------------------------
 
 import glfw
 from OpenGL.GL import *
@@ -64,7 +70,7 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *       # <-- Aqui estamos importando la biblioteca GLUT FreeGLUT para las figuras precargadas.
 
 
-def iniciar_ventana():
+def iniciar_ventana():                              # COLOCAR ESTAS CUATRO LINEAS AL PRINCIPIO ANTES DE GLFW
     glutInit()                                      # <-- Inicializar GLUT para usar figuras precargadas
     glutInitWindowSize(1, 1)                        # <-- Menciona que el tamaño de la ventana es de 1x1 (ancho, alto) pixeles
     glutInitWindowPosition(0,0)                     # <-- Posiciona la ventana en las coordenadas (0,0)

@@ -3,6 +3,14 @@
     Si es el caso en windows tenemos que instalar los paquetes para que reconozca GLUT 
 
         pip install PyOpenGL PyOpenGL-accelerate PyGLUT
+
+    PARA QUE FUNCIONE EN WINDOWS REVISAR LAS NOTAS DE LOS ARCHIVOS
+    B04_ErrorGLUT.pdf  y  B04_SolErrorGLUT.txt
+
+    *****************************************************************************************
+    En windows no funcionan adecuadamente ambas librerias (glfw y GLUT), entonces tenemos  **
+    que hacer una trampa                                                                   **
+    *****************************************************************************************
 """
 
 import glfw
@@ -44,7 +52,7 @@ def cambiar_perspectiva(ancho, alto, fov=45):
 
 
 # Función para dibujar un cuadro
-def dibujar_figuras_precargadas(angulo_rotacion):
+def dibujar_figuras_precargadas(angulo_lento):
 
     # Dibuja los ejes de coordenadas "x", "y" y "z"
     glBegin(GL_LINES)
