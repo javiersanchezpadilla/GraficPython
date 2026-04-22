@@ -1,38 +1,38 @@
 """ USO DE PERSPECTIVA Y LOOKAT
 
-     imaginar que estás en un set de filmación de una película. 
-     En OpenGL, tú eres el director de cámara.
+    imaginar que estás en un set de filmación de una película. 
+    En OpenGL, tú eres el director de cámara.
      
-     1. gluPerspective: La Lente de la Cámara
-     Esta función define qué tipo de lente tiene tu cámara. ¿Es un gran angular 
-     que ve mucho espacio o un zoom que ve solo un detalle?
+    1. gluPerspective: La Lente de la Cámara
+    Esta función define qué tipo de lente tiene tu cámara. ¿Es un gran angular 
+    que ve mucho espacio o un zoom que ve solo un detalle?
      
-     ¿Qué hace?: Crea la sensación de profundidad. Las cosas lejos se ven 
-     pequeñas y las cerca se ven grandes.
-     Parámetros clave:
-     fovy: El ángulo de visión (qué tan abierta es la toma). 
-     45 grados es lo estándar.
-     aspect: La relación entre ancho y alto (para que no se vea "estirada" la imagen).
-     zNear y zFar: Qué tan cerca y qué tan lejos puede ver la cámara (el rango de visión).
+    ¿Qué hace?: Crea la sensación de profundidad. Las cosas lejos se ven 
+    pequeñas y las cerca se ven grandes.
+    Parámetros clave:
+    fovy: El ángulo de visión (qué tan abierta es la toma). 
+    45 grados es lo estándar.
+    aspect: La relación entre ancho y alto (para que no se vea "estirada" la imagen).
+    zNear y zFar: Qué tan cerca y qué tan lejos puede ver la cámara (el rango de visión).
      
-     2. gluLookAt: La Posición de la CámaraEsta función define dónde está la 
-     cámara y a dónde apunta.
-     ¿Qué hace?: Mueve físicamente la cámara por el espacio 3D.
-     Parámetros clave (se agrupan de 3 en 3):
-     eye (x, y, z): ¿Dónde estás parado tú con la cámara?
-     center (x, y, z): ¿A qué punto exacto estás mirando?
-     up (x, y, z): ¿Hacia dónde está el 'cielo' (donde es arriba)? (Normalmente es 0, 1, 0).
+    2. gluLookAt: La Posición de la CámaraEsta función define dónde está la 
+    cámara y a dónde apunta.
+    ¿Qué hace?: Mueve físicamente la cámara por el espacio 3D.
+    Parámetros clave (se agrupan de 3 en 3):
+    eye (x, y, z): ¿Dónde estás parado tú con la cámara?
+    center (x, y, z): ¿A qué punto exacto estás mirando?
+    up (x, y, z): ¿Hacia dónde está el 'cielo' (donde es arriba)? (Normalmente es 0, 1, 0).
      
-     Imagina que hay un cubo en el centro del mundo (0, 0, 0) y nosotros nos 
-     alejamos para verlo desde una esquina.
+    Imagina que hay un cubo en el centro del mundo (0, 0, 0) y nosotros nos 
+    alejamos para verlo desde una esquina.
 
-     Resumen de la analogía:
-     gluPerspective: Es cuando decides si vas a usar un lente de 18mm (mucha visión) o 
-     uno de 200mm (telescopio). Solo lo haces una vez o cuando cambias el tamaño de la 
-     ventana.
-     gluLookAt: Es cuando mueves el trípode de la cámara por la habitación. Se 
-     suele llamar en cada vuelta del bucle si quieres que la cámara se mueva 
-     (por ejemplo, si sigues a un personaje).
+    Resumen de la analogía:
+    gluPerspective: Es cuando decides si vas a usar un lente de 18mm (mucha visión) o 
+    uno de 200mm (telescopio). Solo lo haces una vez o cuando cambias el tamaño de la 
+    ventana.
+    gluLookAt: Es cuando mueves el trípode de la cámara por la habitación. Se 
+    suele llamar en cada vuelta del bucle si quieres que la cámara se mueva 
+    (por ejemplo, si sigues a un personaje).
     
 """
 import glfw
@@ -96,9 +96,11 @@ def main():
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         
         # 1. Configuramos la lente
+        # primero debemos definir la perspetiva
         configurar_proyeccion(ancho, alto)
         
         # 2. Posicionamos la camara
+        # una vez definida la perspectiva se define el lookAt
         configurar_camara()
         
         # 3. Dibujamos el objeto
