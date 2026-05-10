@@ -14,7 +14,7 @@ import numpy as np
                                                     # Configuración de Ventana y Constantes
 ANCHO_VENTANA = 800
 ALTO_VENTANA = 600
-NOMBRE_ARCHIVO = "/home/javier/Documentos/Programas/Python/Texturas/PNGs/ejm_redim.jpg"
+NOMBRE_ARCHIVO = "/home/javier/Documentos/Programas/Python/GraficPython/MIS_CLASES/Unidad_4/PNGs/ejm_redim.jpg"
 texture_id = None                                   # ID global para la textura de OpenGL
 
 

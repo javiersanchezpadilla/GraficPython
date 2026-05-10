@@ -11,13 +11,17 @@
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-    En caso de no indicar estas últimas lineas , el sprite se dibujará con un fondo negro. """
+    En caso de no indicar estas últimas lineas , el sprite se dibujará con un fondo negro. 
+    
+    En este ejemplo hacer que la cargar de los sprites respete el sentido de dirección de la tecla    
+"""
 
 
 import glfw
 from OpenGL.GL import *
 from PIL import Image
 import time
+import os
 
                                         # Para controlar el sentido del ave
 va_hacia_la_derecha = False
@@ -59,19 +63,20 @@ def main():
     ventana = glfw.create_window(800, 600, "Sprite con Fondo y Movimiento", None, None)
     glfw.make_context_current(ventana)
 
+    dir_base = "/home/javier/Documentos/Programas/Python/GraficPython/MIS_CLASES/Unidad_4/PNGs"
     # Cargar fondo
-    fondo = cargar_textura("/home/javier/Documentos/Programas/Python/Texturas/PNGs/FondoSprite02.bmp")
+    fondo = cargar_textura(dir_base + "/FondoSprite02.jpg")
 
     # Cargar 5 sprites (animación)
-    rutas = [
-        "/home/javier/Documentos/Programas/Python/Texturas/PNGs/PajA.png",
-        "/home/javier/Documentos/Programas/Python/Texturas/PNGs/PajB.png",
-        "/home/javier/Documentos/Programas/Python/Texturas/PNGs/PajC.png",
-        "/home/javier/Documentos/Programas/Python/Texturas/PNGs/PajD.png",
-        "/home/javier/Documentos/Programas/Python/Texturas/PNGs/PajE.png",
-        "/home/javier/Documentos/Programas/Python/Texturas/PNGs/PajF.png",
-        "/home/javier/Documentos/Programas/Python/Texturas/PNGs/PajG.png",
-        "/home/javier/Documentos/Programas/Python/Texturas/PNGs/PajH.png"
+    rutas = [ 
+        dir_base + "/PajA.png",
+        dir_base + "/PajB.png",
+        dir_base + "/PajC.png",
+        dir_base + "/PajD.png",
+        dir_base + "/PajE.png",
+        dir_base + "/PajF.png",
+        dir_base + "/PajG.png",
+        dir_base + "/PajH.png"
     ]
 
     sprites = [cargar_textura(r) for r in rutas]

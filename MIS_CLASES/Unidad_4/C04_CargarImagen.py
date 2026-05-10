@@ -135,3 +135,4 @@ def cargar_y_mostrar_informacion(nombre_archivo):
 if __name__ == "__main__":
     crear_archivo_de_prueba()                           # Aseguramos que haya un archivo para probar
     cargar_y_mostrar_informacion(NOMBRE_ARCHIVO)        # Ejecutamos la carga
+    
