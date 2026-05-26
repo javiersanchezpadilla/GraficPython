@@ -1,4 +1,8 @@
 """
+Buscar efectos de sonido en 
+https://pixabay.com/es/sound-effects/search/golpe/ 
+
+AUN NO FUNCIONA!!!!!!
 
 """
 
@@ -15,14 +19,15 @@ import pygame               # <<< Esto es solo para el audio.
 pygame.mixer.init()
 
 # Música de fondo
-pygame.mixer.music.load("audio/musica_fondo.mp3")
+ruta_sonidos = "/home/javier/Documentos/Programas/Python/GraficPython/MIS_CLASES/Unidad_4/PNGs/Sonidos/"
+pygame.mixer.music.load(ruta_sonidos + "musicafondo.mp3")
 pygame.mixer.music.set_volume(0.5)   # volumen 50%
 pygame.mixer.music.play(-1)          # repetir infinito
 
 # Efectos de sonido
-sonido_paso  = pygame.mixer.Sound("audio/paso.wav")
-sonido_golpe = pygame.mixer.Sound("audio/golpe.wav")
-sonido_salto = pygame.mixer.Sound("audio/salto.wav")
+sonido_paso  = pygame.mixer.Sound(ruta_sonidos + "paso.mp3")
+sonido_golpe = pygame.mixer.Sound(ruta_sonidos + "golpe.mp3")
+sonido_salto = pygame.mixer.Sound(ruta_sonidos + "salto.mp3")
 
 # ------------------------------------------------------
 # Funciones para cargar texturas (igual que antes)
@@ -57,16 +62,18 @@ glfw.make_context_current(window)
 # ------------------------------------------------------
 # Cargar fondo + sprites
 # ------------------------------------------------------
-background_tex, bg_w, bg_h = load_texture("background.png")
+ruta_textura = "/home/javier/Documentos/Programas/Python/GraficPython/MIS_CLASES/Unidad_4/PNGs/Parallax/"
+background_tex, bg_w, bg_h = load_texture(ruta_textura + "ImagenCompleta.png")
 
 bg_scroll = 0.0
 bg_speed = 0.01
 
+ruta_sprites = "/home/javier/Documentos/Programas/Python/GraficPython/MIS_CLASES/Unidad_4/PNGs/Sprites/"
 sprites = {
-    "down":  load_sprite_folder("sprites/down"),
-    "up":    load_sprite_folder("sprites/up"),
-    "left":  load_sprite_folder("sprites/left"),
-    "right": load_sprite_folder("sprites/right")
+    "down":  load_sprite_folder(ruta_sprites + "izquierda"),
+    "up":    load_sprite_folder(ruta_sprites + "derecha"),
+    "left":  load_sprite_folder(ruta_sprites + "izquierda"),
+    "right": load_sprite_folder(ruta_sprites + "derecha")
 }
 
 direction = "down"

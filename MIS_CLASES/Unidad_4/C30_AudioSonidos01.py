@@ -6,9 +6,14 @@
     Música:     .mp3,                   .ogg
     Efectos:    .wav (recomendado)      .ogg
 
-    ¿Por qué WAV para efectos? Porque se cargan completos en memoria (son muy rápidos y sin retraso)
+    ¿Por qué WAV para efectos? 
+    --------------------------
+    Porque se cargan completos en memoria (son muy rápidos y sin retraso)
+    al ejecutar el programa puede oprimir las teclas del 1 al 7 para reproducir 
+    diferentes sonidos.
 
-    al ejecutar el programa puede oprimir las teclas del 1 al 7 para reproducir diferentes sonidos.
+    Buscar efectos de sonido en 
+    https://pixabay.com/es/sound-effects/search/golpe/ 
 """
 
 

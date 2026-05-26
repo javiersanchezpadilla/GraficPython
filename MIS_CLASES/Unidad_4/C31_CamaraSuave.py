@@ -1,8 +1,6 @@
 """ Manejo de la camara suave
 
-
-
-    ¿Qué parte es la “cámara suave”?
+    ¿Qué parte es la cámara suave?
 
     Exactamente esta:
 
